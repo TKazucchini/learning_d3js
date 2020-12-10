@@ -13,16 +13,6 @@
 // d3.csv("data.csv").then(function(data) {
 //d3.csv("data/mydata.csv").then(function(data){
 
-d3.csv("../mydata.csv", function(data) {
-    console.log("This should be displayed first.");
-    console.log(data[0]); // print out the first row of the data
-});
-
-d3.csv("/../mydata.csv", function(data) {
-    console.log("This should be displayed second.");
-    console.log(data[0]); // print out the first row of the data
-})
-
 d3.csv("/data/mydata.csv", function(error, data){
     var dataSet = [];
     for(var i = 0; i < data.length; i++){
