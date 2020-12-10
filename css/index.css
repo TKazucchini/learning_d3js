@@ -1,0 +1,37 @@
+body {
+	background-color: #EEE;
+}
+
+a {
+	font-size: 14px;
+	color: #3874e3;
+	text-decoration: underline;
+	cursor: pointer;
+}
+
+#result {
+	position: relative;
+	width: 420px;
+	height: 300px;
+	margin-top: 20px;
+	background-color: #FFF;
+}
+#result svg {
+	position: absolute;
+	top: 0;
+	left: 0;
+}
+#result svg circle {
+	margin: 10px 0 0 0;
+	font-size: 11px;
+}
+
+#result .axis path,
+#result .axis line {
+	fill: none;
+	stroke: #666;
+	shape-rendering: crispEdges;
+}
+#result .axis text {
+	font-size: 11px;
+}
