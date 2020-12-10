@@ -16,6 +16,7 @@ d3.csv("data/mydata.csv", function(error, data){
     var dataSet = [];
     for(var i = 0; i < data.length; i++){
         dataSet.push(data[i].item1);
+        console.log(data);
     };
 
     // データセットを反復して描画
