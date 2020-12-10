@@ -13,7 +13,7 @@
 // d3.csv("data.csv").then(function(data) {
 //d3.csv("data/mydata.csv").then(function(data){
 
-d3.csv("/data/mydata.csv", function(error, data){
+d3.csv("https://black-water-0d3497500.azurestaticapps.net/data/mydata.csv", function(error, data){
     var dataSet = [];
     for(var i = 0; i < data.length; i++){
         dataSet.push(data[i].item1);
