@@ -12,11 +12,10 @@
 //データセットをcsvから読み込む
 // d3.csv("data.csv").then(function(data) {
 //d3.csv("data/mydata.csv").then(function(data){
-d3.csv("data/mydata.json", function(error, data){
+d3.csv("data/mydata.csv", function(error, data){
     var dataSet = [];
     for(var i = 0; i < data.length; i++){
         dataSet.push(data[i].item1);
-        console.log(data);
     };
 
     // データセットを反復して描画
@@ -37,21 +36,21 @@ d3.csv("data/mydata.json", function(error, data){
         d3.select(this)
         .style("fill", "cyan")
     })
-});
 
-// ボタンクリック時の処理
-d3.select("#updateButton")
-.on("click", function(){
-    // データをランダムに生成
-    for (var i = 0; i < dataSet.length; i++){
-        dataSet[i] = Math.floor(Math.random() * 320) // 0～320未満の数値を生成
-    }
-    d3.select("#myGraph")
-    .selectAll("rect")
-    .data(dataSet)
-    .transition()
-    .duration(500)
-    .attr("width", function(d, i){
-        return d + "px";
-    })
+    // ボタンクリック時の処理
+    d3.select("#updateButton")
+    .on("click", function(){
+        // データをランダムに生成
+        for (var i = 0; i < dataSet.length; i++){
+            dataSet[i] = Math.floor(Math.random() * 320) // 0～320未満の数値を生成
+        }
+        d3.select("#myGraph")
+        .selectAll("rect")
+        .data(dataSet)
+        .transition()
+        .duration(500)
+        .attr("width", function(d, i){
+            return d + "px";
+        })
+    });
 });
