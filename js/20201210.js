@@ -10,10 +10,13 @@
 //.attr("height", "20px")
 
 //データセットをcsvから読み込む
-// d3.csv("data.csv").then(function(data) {
-d3.csv("https://black-water-0d3497500.azurestaticapps.net/data/mydata.csv").then(function(data){
-
+// ↓ d3js.v3
 //d3.csv("https://black-water-0d3497500.azurestaticapps.net/data/mydata.csv", function(error, data){
+
+// ↓ d3js.v6
+//d3.csv("https://black-water-0d3497500.azurestaticapps.net/data/mydata.csv").then(function(data){
+d3.csv("./data/mydata.csv").then(function(data){
+
     var dataSet = [];
     for(var i = 0; i < data.length; i++){
         dataSet.push(data[i].item1);
