@@ -76,8 +76,6 @@ d3.selectAll("button").on("click", function(){
         var barElements = d3.select("#myGraph")
         .selectAll("rect")
         .data(dataSet)
-        .transition()
-        .duration(500)
 
         // データの追加が行われる場合
         barElements.enter()
@@ -97,6 +95,11 @@ d3.selectAll("button").on("click", function(){
         .attr("width", function(d, i){
             return d;
         })
+
+        // データの削除（別のデータを表示したときに残らないように）
+        barElements
+        .exit()
+        .remove()
     })
 })
 
@@ -104,7 +107,7 @@ d3.selectAll("button").on("click", function(){
 d3.select("#updateButton")
 .on("click", function(){
     // データをランダムに生成
-    var dataSet = [];
+    var dataSet = [0, 0, 0, 0, 0]; // 下で件 length 定義しているから Element を入れておく
     for (var i = 0; i < dataSet.length; i++){
         dataSet[i] = Math.floor(Math.random() * 320) // 0～320未満の数値を生成
     }
