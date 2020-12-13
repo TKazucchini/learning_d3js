@@ -69,7 +69,7 @@ d3.selectAll("button").on("click", function(){
     d3.csv("./data/mydata.csv").then(function(data){
         var dataSet = [];
         for(var i = 0; i < data.length; i++){
-            dataSet.push(data[i].csvCol);
+            dataSet.push(data[i].item1);
         };
 
         // グラフを描画
