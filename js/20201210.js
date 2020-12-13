@@ -89,9 +89,9 @@ d3.selectAll("button").on("click", function(){
         .attr("y", function(d, i){
             return i * 25
         })
-
+        .transition()
+        .duration(500)
         // データの更新が行われる場合
-        barElements
         .attr("width", function(d, i){
             return d;
         })
@@ -99,3 +99,21 @@ d3.selectAll("button").on("click", function(){
     })
 
 })
+
+
+// ボタンクリック時の処理
+d3.select("#updateButton")
+.on("click", function(){
+    // データをランダムに生成
+    for (var i = 0; i < dataSet.length; i++){
+        dataSet[i] = Math.floor(Math.random() * 320) // 0～320未満の数値を生成
+    }
+    d3.select("#myGraph")
+    .selectAll("rect")
+    .data(dataSet)
+    .transition()
+    .duration(500)
+    .attr("width", function(d, i){
+        return d + "px";
+    })
+});
