@@ -91,7 +91,9 @@ d3.selectAll("button").on("click", function(){
         })
         .transition()
         .duration(500)
+
         // データの更新が行われる場合
+        barElements
         .attr("width", function(d, i){
             return d;
         })
@@ -105,6 +107,7 @@ d3.selectAll("button").on("click", function(){
 d3.select("#updateButton")
 .on("click", function(){
     // データをランダムに生成
+    var dataSet = [];
     for (var i = 0; i < dataSet.length; i++){
         dataSet[i] = Math.floor(Math.random() * 320) // 0～320未満の数値を生成
     }
