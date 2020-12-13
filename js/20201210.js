@@ -11,17 +11,15 @@
 
 //データセットをcsvから読み込む
 // ↓ d3js.v3
-//d3.csv("https://black-water-0d3497500.azurestaticapps.net/data/mydata.csv", function(error, data){
+//d3.csv("./data/mydata.csv", function(error, data){
 
+/* 
 // ↓ d3js.v6
-//d3.csv("https://black-water-0d3497500.azurestaticapps.net/data/mydata.csv").then(function(data){
 d3.csv("./data/mydata.csv").then(function(data){
 
     var dataSet = [];
     for(var i = 0; i < data.length; i++){
         dataSet.push(data[i].item1);
-        console.log('This should be displayd third.');
-        console.log(data);
     };
 
     // データセットを反復して描画
@@ -60,3 +58,44 @@ d3.csv("./data/mydata.csv").then(function(data){
         })
     });
 });
+*/
+
+// ボタンがクリックされたらCSVファイルの該当列を読み込む
+d3.selectAll("button").on("click", function(){
+    var csvCol = this.getAttribute("data-src");
+    var barElements;
+
+    // CSV ファイルを読み込みグラフを表示
+    d3.csv("./data/mydata.csv").then(function(data){
+        var dataSet = [];
+        for(var i = 0; i < data.length; i++){
+            dataSet.push(data[i].csvCol);
+        };
+
+        // グラフを描画
+        barElements = d3.select("#myGraph")
+        .selectAll("rect")
+        .data(dataSet)
+
+        // データの追加が行われる場合
+        barElements.enter()
+        .appent("rect")
+        .attr("class", "bar")
+        .attr("width", function(d, i){
+            return d;
+        })
+        .attr("height", 20)
+        .attr("x", 0)
+        .attr("y", function(d, i){
+            return i * 25
+        })
+
+        // データの更新が行われる場合
+        barElements
+        .attr("width", function(d, i){
+            return d;
+        })
+
+    })
+
+})
