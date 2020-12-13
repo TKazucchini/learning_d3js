@@ -89,14 +89,14 @@ d3.selectAll("button").on("click", function(){
         .attr("y", function(d, i){
             return i * 25
         })
-        .transition()
-        .duration(500)
 
         // データの更新が行われる場合
         barElements
         .attr("width", function(d, i){
             return d;
         })
+        .transition()
+        .duration(500) // アニメーションはデータ更新に記述しないと動かない
 
     })
 
@@ -107,7 +107,7 @@ d3.selectAll("button").on("click", function(){
 d3.select("#updateButton")
 .on("click", function(){
     // データをランダムに生成
-    var dataSet = [];
+    var dataSet = [0, 0, 0, 0, 0]; // 下で length 読んでるから Element を入れとく
     for (var i = 0; i < dataSet.length; i++){
         dataSet[i] = Math.floor(Math.random() * 320) // 0～320未満の数値を生成
     }
