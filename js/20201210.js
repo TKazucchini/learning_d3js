@@ -62,13 +62,13 @@ d3.csv("./data/mydata.csv").then(function(data){
 
 // ボタンがクリックされたらCSVファイルの該当列を読み込む
 d3.selectAll("button").on("click", function(){
-    var csvCol = this.getAttribute("data-src");
+    var csvFile = this.getAttribute("data-src");
 
     // CSV ファイルを読み込みグラフを表示
-    d3.csv("./data/mydata.csv").then(function(data){
+    d3.csv(csvFile).then(function(data){
         var dataSet = [];
         for(var i = 0; i < data.length; i++){
-            dataSet.push(data[i].csvCol);
+            dataSet.push(data[i].item1);
             console.log(dataSet);
         };
 
