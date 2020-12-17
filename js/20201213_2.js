@@ -44,7 +44,7 @@ var yScale = d3.scaleLinear()
 
 // 目盛を設定し表示する
 d3.select("#myGraph")
-.append("g")
+.append("g") // これがないと目盛が出ない g: PowerPoint のグループ化みたいなもの 
 .attr("class", "axis")
 .attr("transform", "translate(" + offsetX + ", " + ((svgHeight - 300) - offsetY) + ")")
 .call(d3.axisLeft(yScale))
