@@ -1,7 +1,7 @@
 // データ
 var svgHeight = 240;
 var barElements;
-var dataSet = [120, 70, 175, 80, 220, 210, 300];
+var dataSet = [120, 70, 175, 80, 220, 210, 300, 120];
 var offsetX = 30; // グラフが目盛と重ならないように位置調整
 var offsetY = 10; // グラフが目盛と重ならないように位置調整
 
