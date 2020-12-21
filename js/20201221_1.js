@@ -6,11 +6,14 @@ d3.json("./data/mydata.json").then(function(data){
     var svgWidth = window.getComputedStyle(svgEle, null).getPropertyValue("width");
     var svgHeight = window.getComputedStyle(svgEle, null).getPropertyValue("heiht");
 
+    console.log(svgWidth);
+    console.log(svgHeight);
+
     svgWidth = parseFloat(svgWidth) - 60;
     svgHeight = parseFloat(svgHeight) - 60;
 
     console.log(svgWidth);
-    console.log(svgheight);
+    console.log(svgHeight);
 
     var offsetX = 30;
     var offsetY = 20;
