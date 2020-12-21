@@ -4,7 +4,7 @@ d3.json("./data/mydata.json").then(function(data){
 
     var svgEle = document.getElementById("myGraph")
     var svgWidth = window.getComputedStyle(svgEle, null).getPropertyValue("width");
-    var svgHeight = window.getComputedStyle(svgEle, null).getPropertyValue("heiht");
+    var svgHeight = window.getComputedStyle(svgEle, null).getPropertyValue("height");
 
     console.log(svgWidth);
     console.log(svgHeight);
