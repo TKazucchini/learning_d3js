@@ -9,6 +9,9 @@ d3.json("./data/mydata.json").then(function(data){
     svgWidth = parseFloat(svgWidth) - 60;
     svgHeight = parseFloat(svgHeight) - 60;
 
+    console.log(svgWidth);
+    console.log(svgheight);
+
     var offsetX = 30;
     var offsetY = 20;
     var scale = 2.0;
@@ -81,10 +84,10 @@ d3.json("./data/mydata.json").then(function(data){
             return fmtFunc(d);
         }))
         .selectAll("text")
-        .attr("transform", "rorate(90)")
-        .attr("dx", "0.7em")
-        .attr("dy", "-0.4em")
-        .style("text-anchor", "start")
+        //.attr("transform", "rorate(90)")
+        //.attr("dx", "0.7em")
+        //.attr("dy", "-0.4em")
+        //.style("text-anchor", "start")
     }
 
     // json  データから表示する範囲のデータセットを抽出して svg 要素ないを消去
