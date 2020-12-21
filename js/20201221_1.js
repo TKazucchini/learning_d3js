@@ -41,7 +41,7 @@ d3.json("./data/mydata.json").then(function(data){
         .y(function(d, i){
             return svgHeight - (d[itemName] * scale) - offsetY;
         })
-        .interpolate(type)
+        //.interpolate(type) // D3 Ver 3 まで
         
         var lineElements = d3.select("#myGraph")
         .append("path")
