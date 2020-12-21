@@ -1,5 +1,5 @@
 // json データを読み込む
-d3.json("mydata.json").then(function(data){
+d3.json("./data/mydata.json").then(function(data){
     var dataSet = [];
 
     var svgEle = document.getElementById("myGraph")
