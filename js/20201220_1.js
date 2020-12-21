@@ -128,15 +128,25 @@ function drawScale(){
     */
 
 	// 横の目盛りを表示するためにD3スケールを設定
-	var xScale = d3.scaleLinear()  // スケールを設定
-		.domain([2004, 2013])	// 2004年から2013年まで
-        .range([0, svgWidth]) // 出力サイズ
+	//var xScale = d3.scaleLinear()  // スケールを設定
+	//.domain([2004, 2013])	// 2004年から2013年まで
+	//.range([0, svgWidth]) // 出力サイズ
+		
+	// x軸を時間表示に変更
+	var xScale = d3.scaleTime()
+	.domain([new Date("2004/1/1"), new Date("2013/1/1")])
+	.range([10, svgWidth])
         
 	// 横の目盛りを表示
 	d3.select("#myGraph")	// SVG要素を指定
 			.append("g")	// g要素を追加。これが目盛りを表示する要素になる
 			.attr("class", "axis")	// CSSクラスを指定
 			.attr("transform", "translate("+offsetX+", "+(svgHeight - offsetY)+")")
-            .call(d3.axisBottom(xScale).ticks(5))
+			.call(d3.axisBottom(xScale)
+				.ticks(5)
+				.tickFormat(function(d, i){
+					var fmtFunc =  d3.timeFormat("%Y年%m月"); // 変換関数の定義
+					return fmtFunc(d);
+				}))
             
 }
