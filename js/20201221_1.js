@@ -75,9 +75,9 @@ d3.json("./data/mydata.json").then(function(data){
         .attr("class", "axis")
         .attr("transform", "translate(" + offsetX + ", " + (svgHeight - offsetY) + ")")
         .call(d3.axisBottom(xScale)
-        //.tick(10)
+        .ticks(10)
         .tickFormat(function(d, i){
-            var fmtFunc = d3.time.format("%Y年%m月");
+            var fmtFunc = d3.timeFormat("%Y年%m月");
             return fmtFunc(d);
         }))
         .selectAll("text")
