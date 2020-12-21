@@ -65,7 +65,7 @@ d3.json("./data/mydata.json").then(function(data){
         .attr("transform", "translate(" + offsetX + ", " + ((100 - (scale - 1) * 100) + offsetY) + ")")
         .call(d3.axisLeft(yScale))
 
-        var xScale = scaleTime()
+        var xScale = d3.scaleTime()
         .domain([new Date(currentYear + "/1/1"), new Date((currentYear + rangeYear - 1) + "/1/1")]) //表示範囲の年数を指定
         .range([0, svgWidth])
          
