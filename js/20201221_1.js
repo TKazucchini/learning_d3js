@@ -87,7 +87,7 @@ d3.json("./data/mydata.json").then(function(data){
             return fmtFunc(d);
         }))
         .selectAll("text")
-        .attr("transform", "rorate(90)")
+        .attr("transform", "rotate(90)")
         .attr("dx", "0.7em")
         .attr("dy", "-0.4em")
         .style("text-anchor", "start")
