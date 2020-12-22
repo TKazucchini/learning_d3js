@@ -6,14 +6,9 @@ d3.json("./data/mydata.json").then(function(data){
     var svgWidth = window.getComputedStyle(svgEle, null).getPropertyValue("width");
     var svgHeight = window.getComputedStyle(svgEle, null).getPropertyValue("height");
 
-    console.log(svgWidth);
-    console.log(svgHeight);
-
+    // float に変換
     svgWidth = parseFloat(svgWidth) - 60;
     svgHeight = parseFloat(svgHeight) - 60;
-
-    console.log(svgWidth);
-    console.log(svgHeight);
 
     var offsetX = 30;
     var offsetY = 20;
@@ -63,14 +58,14 @@ d3.json("./data/mydata.json").then(function(data){
         var yScale = d3.scaleLinear()
         .domain([0, 100])
         //.range([scale * 100, 0])
-        .range([svgHeight, 0])
+        .range([svgHeight - offsetY, 0])
         
         
         // 目盛を表示
         d3.select("#myGraph")
         .append("g")
         .attr("class", "axis")
-        .attr("transform", "translate(" + offsetX + ", " + ((100 - (scale - 1) * 100) + offsetY) + ")")
+        .attr("transform", "translate(" + offsetX + ", " + ((svgHeight - (scale - 1) * 100) + offsetY) + ")")
         .call(d3.axisLeft(yScale))
 
         var xScale = d3.scaleTime()
