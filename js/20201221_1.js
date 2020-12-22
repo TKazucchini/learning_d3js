@@ -99,7 +99,7 @@ d3.json("./data/mydata.json").then(function(data){
         for (var i = 0; i < rangeYear; i++){
             dataSet[i] = data[start + i];
         }
-        d3.select("myGraph").selectAll("*").remove(); // svg 要素内を消去
+        d3.select("#myGraph").selectAll("*").remove(); // svg 要素内を消去
     }
 
     // 「次へ」ボタンにイベントを割り当てる
@@ -118,7 +118,7 @@ d3.json("./data/mydata.json").then(function(data){
 
     // 「前へ」ボタンにイベントを割り当てる
     d3.select("#next").on("click", function(){
-        if (currentYear <= year[0]){              // 最小年よりも大きい場合には年数を一つ増やす
+        if (currentYear <= year[1] - rangeYear){     // 最大年 + 範囲よりも小さい場合には年数を一つ増やす
             currentYear = currentYear + 1;
         }
  
