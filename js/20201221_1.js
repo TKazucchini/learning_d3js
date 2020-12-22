@@ -40,7 +40,7 @@ d3.json("./data/mydata.json").then(function(data){
             return offsetX + i * margin;
         })
         .y(function(d, i){
-            return svgHeight - (d[itemName] * scale) - offsetY;
+            return svgHeight - (d[itemName]) - offsetY;
         })
         //.interpolate(type) // D3 Ver 3 まで
         
