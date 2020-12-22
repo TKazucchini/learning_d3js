@@ -65,7 +65,7 @@ d3.json("./data/mydata.json").then(function(data){
         d3.select("#myGraph")
         .append("g")
         .attr("class", "axis")
-        .attr("transform", "translate(" + offsetX + ", " + ((svgHeight - (scale - 1) * 100) + offsetY) + ")")
+        .attr("transform", "translate(" + offsetX + ", " + ((100 - (scale - 1) * 100) + offsetY) + ")")
         .call(d3.axisLeft(yScale))
 
         var xScale = d3.scaleTime()
