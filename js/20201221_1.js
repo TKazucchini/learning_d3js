@@ -62,7 +62,9 @@ d3.json("./data/mydata.json").then(function(data){
         // 目盛を表示するためのD3スケールを設定
         var yScale = d3.scaleLinear()
         .domain([0, 100])
-        .range([scale * 100, 0])
+        //.range([scale * 100, 0])
+        .range([svgHeight, 0])
+        
         
         // 目盛を表示
         d3.select("#myGraph")
