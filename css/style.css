@@ -1,0 +1,70 @@
+html, body {
+    height: 100%;
+}
+
+.filterGeo {
+    width:100%;
+    height:100%;
+    position: absolute;
+    border: solid 1px black;
+    background-color:red;
+    opacity: 0.5;
+}
+
+.filterData {
+    width: 70%;
+    height: 10%;
+    border: solid 1px black;
+    background-color:grey;
+    float: left;
+    opacity: 0.5;
+}
+
+.timeSeries {
+    width: 70%;
+    height: 40%;
+    border: solid 1px black;
+    background-color: blue;
+    float: left;
+    opacity: 0.5;
+}
+
+.pie {
+    width: 50%;
+    height: 50%;
+    border: solid 1px black;
+    background-color: green;
+    float:left;
+    opacity: 0.5;
+}
+
+.pieA, .pieB {
+    width: 49%;
+    height: 99%;
+    border: solid 1px black;
+    background-color: yellow;
+    float: left;
+    opacity: 0.5;
+}
+
+
+
+@media screen and (max-width: 959px) {
+    /* 959px以下に適用されるCSS（タブレット用） */
+    .filterGeo {
+        display: none;
+    }
+    .filterData, .timeSeries, .pie {
+        width: 100%;
+    }
+    .pieA, .pieB {
+        width: 49%;
+    }
+}
+
+@media screen and (max-width: 620px) {
+    /* 620px以下に適用されるCSS（スマホ用） */
+    .pieA, .pieB {
+        width: 100%;
+    }
+}
