@@ -1,17 +1,29 @@
 html, body {
     height: 100%;
+    width: 100%;
+    font-family:sans-serif;
 }
 
-.filterGeo {
+.header {
+    width: 100%;
+    display: inline-block;
+    padding: 1em;
+    border: solid 1px black;
+    background-color:orange;
+    opacity: 0.5;
+}
+
+.geo-filter {
     width:100%;
     height:100%;
+    display: block;
     position: absolute;
     border: solid 1px black;
     background-color:red;
     opacity: 0.5;
 }
 
-.filterData {
+.date-filter {
     width: 70%;
     height: 10%;
     border: solid 1px black;
@@ -20,7 +32,7 @@ html, body {
     opacity: 0.5;
 }
 
-.timeSeries {
+.time-series {
     width: 70%;
     height: 40%;
     border: solid 1px black;
@@ -29,42 +41,51 @@ html, body {
     opacity: 0.5;
 }
 
-.pie {
+.pie-charts {
     width: 50%;
     height: 50%;
+    display: flex;
+    justify-content: space-between;
     border: solid 1px black;
     background-color: green;
     float:left;
     opacity: 0.5;
 }
 
-.pieA, .pieB {
-    width: 49%;
-    height: 99%;
+.pie-chart {
+    display: block;
+    flex-grow: 1;
     border: solid 1px black;
     background-color: yellow;
     float: left;
     opacity: 0.5;
 }
 
+.footer {
+    width: 100%;
+    display: inline-block;
+    padding: 1em;
+    border: solid 1px black;
+    background-color:orange;
+    opacity: 0.5;
+}
 
-
-@media screen and (max-width: 959px) {
-    /* 959px以下に適用されるCSS（タブレット用） */
-    .filterGeo {
+@media screen and (max-width: 720px) {
+    /* 720px以下に適用されるCSS（タブレット用） */
+    .geo-filter {
         display: none;
     }
-    .filterData, .timeSeries, .pie {
+    .date-filter, .time-series {
         width: 100%;
     }
-    .pieA, .pieB {
-        width: 49%;
+    .pie-charts {
+        width: 100%;
+        height: 70%;
+        flex-direction: column;
+    }
+    .pie-chart {
+        width: 100%;
     }
 }
 
-@media screen and (max-width: 620px) {
-    /* 620px以下に適用されるCSS（スマホ用） */
-    .pieA, .pieB {
-        width: 100%;
-    }
-}
+
