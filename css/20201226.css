@@ -1,0 +1,24 @@
+body {
+  max-width:50em;
+  margin-right:auto;
+  margin-left:auto;
+  padding:1em;
+  font-family:sans-serif;
+}
+.axis path,
+.axis line {
+  fill:none;
+  stroke:#000;
+  shape-rendering:crispEdges;
+}
+.x.axis path {
+  display:none;
+}
+.line {
+  fill:none;
+  stroke:#1572F9;
+  stroke-width:1.5px;
+}
+text {
+  font-size:10px;
+}

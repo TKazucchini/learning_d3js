@@ -1,3 +1,7 @@
+/*********************************
+フレーム要素のスタイル
+*********************************/
+
 html, body {
     height: 100%;
     width: 100%;
@@ -9,8 +13,6 @@ html, body {
     display: inline-block;
     padding: 1em;
     border: solid 1px black;
-    background-color:orange;
-    opacity: 0.5;
 }
 
 .geo-filter {
@@ -19,26 +21,20 @@ html, body {
     display: block;
     position: absolute;
     border: solid 1px black;
-    background-color:red;
-    opacity: 0.5;
 }
 
 .date-filter {
     width: 70%;
     height: 10%;
     border: solid 1px black;
-    background-color:grey;
     float: left;
-    opacity: 0.5;
 }
 
 .time-series {
     width: 70%;
     height: 40%;
     border: solid 1px black;
-    background-color: blue;
     float: left;
-    opacity: 0.5;
 }
 
 .pie-charts {
@@ -47,18 +43,14 @@ html, body {
     display: flex;
     justify-content: space-between;
     border: solid 1px black;
-    background-color: green;
     float:left;
-    opacity: 0.5;
 }
 
 .pie-chart {
     display: block;
     flex-grow: 1;
     border: solid 1px black;
-    background-color: yellow;
     float: left;
-    opacity: 0.5;
 }
 
 .footer {
@@ -66,8 +58,6 @@ html, body {
     display: inline-block;
     padding: 1em;
     border: solid 1px black;
-    background-color:orange;
-    opacity: 0.5;
 }
 
 @media screen and (max-width: 720px) {
@@ -89,3 +79,49 @@ html, body {
 }
 
 
+/*********************************
+SVG要素のスタイル
+*********************************/
+svg {
+    width: 100%;
+}
+
+/* time-series のスタイル */
+
+.axis path,
+
+.axis line {
+    fill: none;
+    stroke: black;
+    shape-rendering: crispEdges;
+}
+
+.x.axis path {
+    display: none;
+}
+
+.css-jp {
+    fill: none;
+    stroke: red;
+    stroke-width: 1.5px;
+}
+
+.css-fr {
+    fill: none;
+    stroke: green;
+    stroke-width: 1.5px;
+}
+
+.css-tr {
+    fill: none;
+    stroke: blue;
+    stroke-width: 1.5px;
+}
+
+text {
+    font-size: 10px;
+}
+
+.line {
+    stroke-width: 1px;
+}
