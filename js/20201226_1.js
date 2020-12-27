@@ -48,19 +48,20 @@ var y = d3.scaleLinear()
 
 var xAxis = d3.axisBottom()
   .scale(x)
-  .tickFormat(d3.timeFormat("%m"));
+  .tickFormat(d3.timeFormat("%m月"));
 
 var yAxis = d3.axisLeft()
   .scale(y);
 
   var line = d3.line()
-  .x(function(d){ return x(parseDate(new Date(d.date))); })
+  .x(function(d){ return x(d.date); })
   .y(function(d){ return y(d.value); });
 
 
 // 描画
 data.forEach(function(d){
-  d.date = parseDate(new Date(d.date));
+  d.date = parseDate(d.date);
+  console.log(d.date);
   d.value = +d.value;
 });
 
