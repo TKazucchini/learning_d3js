@@ -146,17 +146,14 @@ d3.csv("./data/export_data.csv").then(function(data){
     update();
     win.on("resize", update);
 
-
-
-    // オブジェクトのコピーを作成する簡易ヘルパー
-    function clone(obj){
-    var copy = {};
-    for( var attr in obj ){
-        if( obj.hasOwnProperty(attr) ) copy[attr] = obj[attr];
-    }
-    return copy;
-    }
-
-
 });
 
+
+// オブジェクトのコピーを作成する簡易ヘルパー
+function clone(obj){
+var copy = {};
+for( var attr in obj ){
+    if( obj.hasOwnProperty(attr) ) copy[attr] = obj[attr];
+}
+return copy;
+}
