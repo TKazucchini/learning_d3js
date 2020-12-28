@@ -82,6 +82,7 @@ d3.csv("./data/export_data.csv").then(function(data){
         console.log('This should be displayd third.');
         console.log(data);
     };
+});
 
 // 時間のフォーマット
 var parseDate = d3.timeParse("%Y-%m-%d"); // 変換関数の定義
