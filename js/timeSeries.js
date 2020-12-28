@@ -74,16 +74,6 @@ var dataSetTr = [
 ];
 
 
-d3.csv("./data/export_data.csv").then(function(data){
-
-    var dataSet = [];
-    for(var i = 0; i < data.length; i++){
-        dataSet.push(data[i]);
-        console.log('This should be displayd in every i loop.');
-        console.log(data[i]);
-    };
-});
-
 // 時間のフォーマット
 var parseDate = d3.timeParse("%Y-%m-%d"); // 変換関数の定義
 
