@@ -136,7 +136,7 @@ d3.csv("./data/export_data.csv").then(function(data){
 
         // 折れ線の位置
         g.selectAll("path.line")
-        .datum(dataSetJp)
+        .datum(dataSet)
         .attr("d", line);
 
     }
