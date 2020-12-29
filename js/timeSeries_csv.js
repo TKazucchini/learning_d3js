@@ -72,6 +72,7 @@ d3.csv("./data/timeSeriesData.csv").then(function(data){
     function render(){
         dataSet.forEach(function(d){
             d.yr_m = parseDate(d.yr_m);
+            d.in_jp = +d.in_jp;
         });
 
         // scale の初期化
