@@ -3,9 +3,9 @@
 
 var margin = {
     top: 5,
-    right: 50,
+    right: 40,
     bottom: 5,
-    left: 50
+    left: 60
 }
 
 
@@ -65,96 +65,105 @@ d3.csv("./data/export_data.csv").then(function(data){
     //drawGraph(dataSet, "tr", "css-tr");
 
 
-    // 折れ線グラフの座標値を計算するメソッド
-    var line = d3.line()
-    .x(function(d){ return x(d.yr_m); })
-    .y(function(d){ return y(d.in_jp); });
+    function drawLine(colName, cssClassName){
 
 
-    // 折れ線グラフの描画
-    function render(){
-        dataSet.forEach(function(d){
-            d.yr_m = parseDate(d.yr_m);
-            d.in_jp = +d.in_jp;
-            d.in_fr = +d.in_fr;
-            d.in_tr = +d.in_tr;
-            d.em_jp = +d.em_jp;
-            d.em_fr = +d.em_fr;
-            d.em_tr = +d.em_tr;
-        });
-
-        // scale の初期化
-        xExtent = d3.extent(dataSet, function(d){ return d.yr_m; })
-        yExtent = d3.extent(dataSet, function(d){ return d.in_jp; })
-        x.domain(xExtent);
-        y.domain(yExtent);
-
-        g.append("g")
-            .attr("class", "x axis");
-
-        g.append("g")
-            .attr("class", "y axis")
-            .append("text")
-            .attr("transform", "rotate(-90)")
-            .attr("y", 6)
-            .attr("dy", ".7em")
-            .style("text-anchor", "end")
-            .text("値の単位");
-
-        g.append("path")
-            .attr("class", "line css-jp")
-
-    }
+        // 折れ線グラフの座標値を計算するメソッド
+        var line = d3.line()
+        .x(function(d){ return x(d.yr_m); })
+        .y(function(d){ return y(d[colName]); });
 
 
-    /// ここまでループ こんな感じ
+        // 折れ線グラフの描画
+        function render(){
+            dataSet.forEach(function(d){
+                d.yr_m = parseDate(d.yr_m);
+                d[colName] = +d[colName];
+            });
 
-    // グラフサイズの更新
-    function update(){
+            // scale の初期化
+            xExtent = d3.extent(dataSet, function(d){ return d.yr_m; })
+            yExtent = d3.extent(dataSet, function(d){ return d[colName]; })
+            x.domain(xExtent);
+            y.domain(yExtent);
 
-        // SVGのサイズ（横幅）を取得
-        size.width = parseInt(svg.style("width"));
+            g.append("g")
+                .attr("class", "x axis");
 
-        // 現在の倍率を元に余白の量も更新
-        // 最小値がそれぞれ30pxになるように調整しておく
-        size.scale = size.width / size.original.width;
-        margin.top    = Math.max(20, margin.original.top * size.scale);
-        margin.right  = Math.max(20, margin.original.right * size.scale);
-        margin.bottom = Math.max(20, margin.original.bottom * size.scale);
-        margin.left   = Math.max(20, margin.original.left * size.scale);
+            g.append("g")
+                .attr("class", "y axis")
+                .append("text")
+                .attr("transform", "rotate(-90)")
+                .attr("y", 6)
+                .attr("dy", ".7em")
+                .style("text-anchor", "end")
+                .text("値の単位");
 
-        // <svg>のサイズを更新
-        svg
-        .attr("width", size.width)
-        .attr("height", size.height);
+            g.append("path")
+                .attr("class", "line " + cssClassName)
 
-        // 縦横の最大幅を新しいサイズに合わせる
-        x.range([0, size.width - margin.left - margin.right]);
-        y.range([size.height - margin.top - margin.bottom, 0]);
+        }
 
-        // 中心位置を揃える
-        g.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-        // 横軸の位置
-        g.selectAll("g.x")
-        .attr("transform", "translate(0, " + ( size.height - margin.top - margin.bottom ) + ")")
-        .call(xAxis);
+    
 
-        // 縦軸の位置
-        g.selectAll("g.y")
-        .call(yAxis);
+        /// ここまでループ こんな感じ
 
-        // 折れ線の位置
-        g.selectAll("path.line")
-        .datum(dataSet)
-        .attr("d", line);
+        // グラフサイズの更新
+        function update(){
 
-    }
+            // SVGのサイズ（横幅）を取得
+            size.width = parseInt(svg.style("width"));
 
-    // 初期化
-    render();
-    update();
-    win.on("resize", update);
+            // 現在の倍率を元に余白の量も更新
+            // 最小値がそれぞれ30pxになるように調整しておく
+            size.scale = size.width / size.original.width;
+            margin.top    = Math.max(20, margin.original.top * size.scale);
+            margin.right  = Math.max(20, margin.original.right * size.scale);
+            margin.bottom = Math.max(20, margin.original.bottom * size.scale);
+            margin.left   = Math.max(20, margin.original.left * size.scale);
+
+            // <svg>のサイズを更新
+            svg
+            .attr("width", size.width)
+            .attr("height", size.height);
+
+            // 縦横の最大幅を新しいサイズに合わせる
+            x.range([0, size.width - margin.left - margin.right]);
+            y.range([size.height - margin.top - margin.bottom, 0]);
+
+            // 中心位置を揃える
+            g.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+            // 横軸の位置
+            g.selectAll("g.x")
+            .attr("transform", "translate(0, " + ( size.height - margin.top - margin.bottom ) + ")")
+            .call(xAxis);
+
+            // 縦軸の位置
+            g.selectAll("g.y")
+            .call(yAxis);
+
+            // 折れ線の位置
+            g.selectAll("path.line")
+            .datum(dataSet)
+            .attr("d", line);
+
+        }
+
+        // 初期化
+        render();
+        update();
+        win.on("resize", update);
+
+    };
+    
+    drawLine("in_jp", "css-jp");
+    drawLine("in_fr", "css-fr");
+    drawLine("in_tr", "css-tr");
+    drawLine("em_jp", "css-jp");
+    drawLine("em_fr", "css-fr");
+    drawLine("em_tr", "css-tr");
 
 });
 
