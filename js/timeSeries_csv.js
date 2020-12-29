@@ -75,6 +75,8 @@ d3.csv("./data/timeSeriesData.csv").then(function(data){
             d.in_jp = +d.in_jp;
         });
 
+        console.log(d.in_jp);
+
         // scale の初期化
         xExtent = d3.extent(dataSet, function(d){ return d.yr_m; })
         yExtent = d3.extent(dataSet, function(d){ return d.in_jp; })
@@ -138,6 +140,7 @@ d3.csv("./data/timeSeriesData.csv").then(function(data){
 
         // 折れ線の位置
         g.selectAll("path.line")
+        .datum(dataSet)
         .attr("d", line);
 
     }
