@@ -205,6 +205,10 @@ function chart(data){
 }
 
 
+
+/*
+
+
 // グラフサイズの更新
 function resize(){
 
@@ -251,6 +255,9 @@ function resize(){
 //render();
 resize();
 win.on("resize", update);
+
+*/
+
 
 
 // オブジェクトのコピーを作成する簡易ヘルパー
