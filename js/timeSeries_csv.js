@@ -127,7 +127,7 @@ function chart(data){
 	    category.enter().insert("g", ".focus").append("path")
 			.attr("class", "line categories")
 			.style("stroke", d => z(d.id))
-			.merge(city)
+			.merge(category)
 		.transition().duration(speed)
 			.attr("d", d => line(d.values))
 
@@ -186,7 +186,7 @@ function chart(data){
 					"translate(" + (x(d.yr_m)) + "," + height / 2.5 + ")")
 				.text(e => e + " " + "people" + formatValue(d[e]));
 
-			x(d.date) > (width - width / 4) 
+			x(d.yr_m) > (width - width / 4) 
 				? focus.selectAll("text.lineHoverText")
 					.attr("text-anchor", "end")
 					.attr("dx", -10)
