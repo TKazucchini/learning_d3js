@@ -75,7 +75,7 @@ d3.csv("./data/timeSeriesData.csv").then(function(data){
             d.in_jp = +d.in_jp;
         });
 
-        console.log(d.in_jp);
+        console.log(dataSet.in_jp);
 
         // scale の初期化
         xExtent = d3.extent(dataSet, function(d){ return d.yr_m; })
