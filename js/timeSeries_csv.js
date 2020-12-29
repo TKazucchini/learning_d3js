@@ -32,8 +32,8 @@ size.scale = 1;
 //size.aspect = size.width / size.height;
 
 //表示するデータ
-d3.csv("./data/export_data.csv").then(function(data){
-
+d3.csv("./data/timeSeriesData.csv").then(function(data){
+    
     var dataSet = [];
     for(var i = 0; i < data.length; i++){
         dataSet.push(data[i]);
