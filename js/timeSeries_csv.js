@@ -3,9 +3,9 @@
 
 var margin = {
     top: 5,
-    right: 40,
+    right: 50,
     bottom: 5,
-    left: 40
+    left: 50
 }
 
 
@@ -63,6 +63,13 @@ d3.csv("./data/export_data.csv").then(function(data){
     //drawGraph(dataSet, "tr", "css-tr");
 
 
+    myObj = {};
+    for (var i = 0; i< d3.keys(data).length; i++) {
+        myObj[ d3.keys(d)[i]] = +d3.values(d)[i];
+    }
+
+    console.log(myObj);
+
     // 折れ線グラフの座標値を計算するメソッド
     var line = d3.line()
     .x(function(d){ return x(d.yr_m); })
@@ -74,9 +81,11 @@ d3.csv("./data/export_data.csv").then(function(data){
         dataSet.forEach(function(d){
             d.yr_m = parseDate(d.yr_m);
             d.in_jp = +d.in_jp;
-
-            console.log(d.in_jp);
-            
+            d.in_fr = +d.in_fr;
+            d.in_tr = +d.in_tr;
+            d.em_jp = +d.em_jp;
+            d.em_fr = +d.em_fr;
+            d.em_tr = +d.em_tr;
         });
 
         // scale の初期化
@@ -99,8 +108,11 @@ d3.csv("./data/export_data.csv").then(function(data){
 
         g.append("path")
             .attr("class", "line css-jp")
+
     }
 
+
+    /// ここまでループ こんな感じ
 
     // グラフサイズの更新
     function update(){
