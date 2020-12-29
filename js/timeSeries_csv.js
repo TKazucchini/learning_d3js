@@ -38,6 +38,8 @@ d3.csv("./data/export_data.csv").then(function(data){
     for(var i = 0; i < data.length; i++){
         dataSet.push(data[i]);
     };
+    
+    console.log(dataSet);
 
 
     // 時間のフォーマット
@@ -62,13 +64,6 @@ d3.csv("./data/export_data.csv").then(function(data){
     //drawGraph(dataSet, "fr", "css-fr");
     //drawGraph(dataSet, "tr", "css-tr");
 
-
-    myObj = {};
-    for (var i = 0; i< d3.keys(data).length; i++) {
-        myObj[ d3.keys(d)[i]] = +d3.values(d)[i];
-    }
-
-    console.log(myObj);
 
     // 折れ線グラフの座標値を計算するメソッド
     var line = d3.line()
