@@ -88,34 +88,6 @@ svg {
 
 /* time-series のスタイル */
 
-.y-axis line {
-	opacity:.2;
-}
-.y-axis path {
-	display:none;
-}
-.line {
-	fill: none;
-	stroke-width: 1.5px;
-	opacity:.75;
-}
-.overlay {
-	fill: none;
-	pointer-events: all;
-}
-.lineHoverText {
-	text-shadow:
-	-2px -2px 0 #fff,
-	2px -2px 0 #fff,
-	-2px 2px 0 #fff,
-	2px 2px 0 #fff;
-}
-.hoverCircle {
-	opacity: .75;
-}
-
-
-/*
 .axis path,
 
 .axis line {
@@ -149,4 +121,3 @@ svg {
 text {
     font-size: 10px;
 }
-*/
