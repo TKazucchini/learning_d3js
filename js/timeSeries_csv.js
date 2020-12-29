@@ -38,8 +38,8 @@ function chart(data){
     var keys = data.columns.slice(1);
     var parseTime = d3.timeParse("%Y-%m-%d"),
         formatDate = d3.timeFormat("%Y-%m-%d"),
-        bisectDate = de.bisector(d => d.date).left,
-        formatValue = de.format(",.0f");
+        bisectDate = d3.bisector(d => d.date).left,
+        formatValue = d3.format(",.0f");
 
     data.forEach(function(d){
         d.yr_m = parseTime(d.yr_m);
