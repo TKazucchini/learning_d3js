@@ -24,11 +24,11 @@ var size = {
 
 
 // 元のサイズを保持しておく
-margin.original = clone(margin);
-size.original = clone(size);
+//margin.original = clone(margin);
+//size.original = clone(size);
 
 // 縦横比率と現在の倍率を保持しておく
-size.scale = 1;
+//size.scale = 1;
 //size.aspect = size.width / size.height;
 
 //表示するデータ
@@ -47,9 +47,9 @@ function chart(data){
     })
 
     var svg = d3.select("#timeSeries"),
-        margin = margin,
-        width = size.width,
-        height = size.height;
+        margin = { top: 5, right: 40, bottom: 5, left: 60 },
+        width = document.getElementsByClassName('time-series')[0].clientWidth - margin.left - margin.right,
+        height = document.getElementsByClassName('time-series')[0].clientHeight - margin.top - margin.bottom;
 
     var x = d3.scaleTime()
         .rangeRound([margin.left, width - margin.right])
