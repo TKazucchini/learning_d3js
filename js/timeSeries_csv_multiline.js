@@ -6,9 +6,9 @@
 
 var margin = {
     top: 5,
-    right: 50,
+    right: 10,
     bottom: 5,
-    left: 50
+    left: 70
 }
 
 
