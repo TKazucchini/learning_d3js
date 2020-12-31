@@ -75,7 +75,7 @@ d3.csv("./data/timeSeriesData.csv").then(function(data){
     function render(){
 
 
-        var keys = dataSet.columns.slice(1);   // changed
+        var keys = data.columns.slice(1);   // changed
 
 
         dataSet.forEach(function(d){
