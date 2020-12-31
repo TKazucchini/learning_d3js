@@ -1,9 +1,9 @@
 
-d3.csv("data.csv").then(d => chart(d))
+d3.csv("./data/timeSeriesData.csv").then(d => chart(d))
 
 function chart(data) {
 
-	var keys = data.columns.slice(1);
+    var keys = data.columns.slice(1);
 
 	var parseTime = d3.timeParse("%Y%m%d"),
 		formatDate = d3.timeFormat("%Y-%m-%d"),
