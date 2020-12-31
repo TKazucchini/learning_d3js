@@ -77,13 +77,15 @@ d3.csv("./data/timeSeriesData.csv").then(function(data){
 
         var keys = data.columns.slice(1);   // changed
 
+        console.log("keys: " + keys);
+
 
         dataSet.forEach(function(d){
             d.yr_m = parseDate(d.yr_m);
             return d;                              // changed
         });
 
-        //console.log(dataSet.in_jp);  // undifined になる。多分カラムの指定方法が決まってる。 
+        console.log("dataSet: " + dataSet);  // undifined になる。多分カラムの指定方法が決まってる。 
 
 
         var copy = keys.filter(f => f.includes(dataSet.values));
@@ -94,6 +96,8 @@ d3.csv("./data/timeSeriesData.csv").then(function(data){
                 values: data.map(d => {return {yr_m: d.yr_m, population: +d[id]}}) // changed
             };
         });
+
+        console.log("categories: " + categories);
 
         // scale の初期化
         xExtent = d3.extent(dataSet, function(d){ return d.yr_m; })
