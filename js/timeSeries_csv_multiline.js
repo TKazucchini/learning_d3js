@@ -126,6 +126,14 @@ d3.csv("./data/timeSeriesData.csv").then(function(data){
         .transition().duration(100)
             .attr("d", d => line(d.values))
 
+        console.log("data.id: " + data.id);
+        console.log("dataSet.id: " + dataSet.id);
+        console.log("d.id: " + d.id);
+        console.log("data.values: " + data.values);
+        console.log("dataSet.values: " + dataSet.values);
+        console.log("d.values: " + d.values);
+
+
     }
 
 
