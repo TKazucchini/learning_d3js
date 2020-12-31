@@ -100,8 +100,8 @@ d3.csv("./data/timeSeriesData.csv").then(function(data){
         //yExtent = d3.extent(dataSet, function(d){ return d.in_jp; })  
         x.domain(xExtent);
         y.domain([
-            d3.min(population, d => d3.min(d.values, c => c.population)),
-            d3.max(population, d => d3.max(d.values, c => c.population))
+            d3.min(categories, d => d3.min(d.values, c => c.population)),
+            d3.max(categories, d => d3.max(d.values, c => c.population))
         ]);
 
         g.append("g")
