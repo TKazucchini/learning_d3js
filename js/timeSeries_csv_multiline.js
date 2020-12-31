@@ -87,10 +87,10 @@ d3.csv("./data/timeSeriesData.csv").then(function(data){
 
         console.log("dataSet: " + dataSet);  // undifined になる。多分カラムの指定方法が決まってる。 
 
+        console.log("data: " + data);
 
-        var copy = keys.filter(f => f.includes(dataSet.values));
 
-        var categories = copy.map(function(id){
+        var categories = keys.map(function(id){
             return {
                 id: id,
                 values: data.map(d => {return {yr_m: d.yr_m, population: +d[id]}}) // changed
