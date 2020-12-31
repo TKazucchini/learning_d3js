@@ -107,8 +107,7 @@ d3.csv("./data/timeSeriesData.csv").then(function(data){
             .attr("transform", "rotate(-90)")
             .attr("y", 6)
             .attr("dy", ".7em")
-            .style("text-anchor", "end")
-            .text("値の単位");
+            .style("text-anchor", "end");
 
 
         var category = svg.selectAll(".categories")
@@ -119,22 +118,13 @@ d3.csv("./data/timeSeriesData.csv").then(function(data){
         //g.append("path")
             //.attr("class", "line css-jp")
         
-        category.enter().insert("g", ".focus").append("path")
+        category.enter().insert("g").append("path")
             .attr("class", "line categories")
             .style("stroke", d => z(d.id))    // id 入ってない？？
             .merge(category)
         .transition().duration(100)
             .attr("d", d => line(d.values))
 
-        console.log("data.id: " + data.id);
-        console.log("dataSet.id: " + dataSet.id);
-        console.log("data.values: " + data.values);
-        console.log("dataSet.values: " + dataSet.values);
-
-        console.log("categories: " + categories);
-        console.log("cateogry" + category);
-
-        console.log("z(d.id): " + z(d.id));
     }
 
 
