@@ -121,7 +121,7 @@ d3.csv("./data/timeSeriesData.csv").then(function(data){
         
         category.enter().insert("g", ".focus").append("path")
             .attr("class", "line categories")
-            .style("stroke", d => z(d.id))
+            .style("stroke", d => z(d.id))    // id 入ってない？？
             .merge(category)
         .transition().duration(100)
             .attr("d", d => line(d.values))
@@ -131,6 +131,10 @@ d3.csv("./data/timeSeriesData.csv").then(function(data){
         console.log("data.values: " + data.values);
         console.log("dataSet.values: " + dataSet.values);
 
+        console.log("categories: " + categories);
+        console.log("cateogry" + category);
+
+        console.log("z(d.id): " + z(d.id));
     }
 
 
