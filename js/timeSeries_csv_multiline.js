@@ -52,6 +52,7 @@ d3.csv("./data/timeSeriesData.csv").then(function(data){
     var g = svg.append("g")
     var x = d3.scaleTime();
     var y = d3.scaleLinear();
+    var z = d3.scaleOrdinal(d3.schemeCategory10); // 色カテゴリ
 
     var xAxis = d3.axisBottom()
         .scale(x)
