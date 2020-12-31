@@ -75,7 +75,6 @@ d3.csv("./data/timeSeriesData.csv").then(function(data){
     // 折れ線グラフの描画
     function render(){
 
-
         var keys = data.columns.slice(1);   // changed
 
         dataSet.forEach(function(d){
@@ -117,12 +116,14 @@ d3.csv("./data/timeSeriesData.csv").then(function(data){
 
         category.exit().remove();
         
-        g.append("path")
+        //g.append("path")
             //.attr("class", "line css-jp")
+        
+        category.enter().insert("g", ".focus").append("path")
             .attr("class", "line categories")
             .style("stroke", d => z(d.id))
             .merge(category)
-            .transition().duration(100)
+        .transition().duration(100)
             .attr("d", d => line(d.values))
 
     }
