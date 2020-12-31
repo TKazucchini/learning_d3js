@@ -1,3 +1,6 @@
+// このファイルで 複数列の表示を作成。別 js ファイル multiline を参照して統合したい
+
+
 //var svgWidth = 320;
 //var svgHeight = 240;
 
@@ -65,23 +68,41 @@ d3.csv("./data/timeSeriesData.csv").then(function(data){
     // 折れ線グラフの座標値を計算するメソッド
     var line = d3.line()
     .x(function(d){ return x(d.yr_m); })
-    .y(function(d){ return y(d.in_jp); });
+    .y(function(d){ return y(d.population); });
 
 
     // 折れ線グラフの描画
     function render(){
+
+
+        var keys = dataSet.columns.slice(1);   // changed
+
+
         dataSet.forEach(function(d){
             d.yr_m = parseDate(d.yr_m);
-            d.in_jp = +d.in_jp;
+            return d;                              // changed
         });
 
         //console.log(dataSet.in_jp);  // undifined になる。多分カラムの指定方法が決まってる。 
 
+
+        var copy = keys.filter(f => f.includes(dataSet.values));
+
+        var categories = copy.map(function(id){
+            return {
+                id: id,
+                values: data.map(d => {return {yr_m: d.yr_m, population: +d[id]}}) // changed
+            };
+        });
+
         // scale の初期化
         xExtent = d3.extent(dataSet, function(d){ return d.yr_m; })
-        yExtent = d3.extent(dataSet, function(d){ return d.in_jp; })
+        //yExtent = d3.extent(dataSet, function(d){ return d.in_jp; })  
         x.domain(xExtent);
-        y.domain(yExtent);
+        y.domain([
+            d3.min(population, d => d3.min(d.values, c => c.population)),
+            d3.max(population, d => d3.max(d.values, c => c.population))
+        ]);
 
         g.append("g")
             .attr("class", "x axis");
