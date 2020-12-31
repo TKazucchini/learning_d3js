@@ -77,18 +77,10 @@ d3.csv("./data/timeSeriesData.csv").then(function(data){
 
         var keys = data.columns.slice(1);   // changed
 
-        console.log("keys: " + keys);
-
-
         dataSet.forEach(function(d){
             d.yr_m = parseDate(d.yr_m);
             return d;                              // changed
         });
-
-        console.log("dataSet: " + dataSet);  // undifined になる。多分カラムの指定方法が決まってる。 
-
-        console.log("data: " + data);
-
 
         var categories = keys.map(function(id){
             return {
@@ -97,8 +89,6 @@ d3.csv("./data/timeSeriesData.csv").then(function(data){
             };
         });
 
-        console.log("categories: " + categories);
-
         // scale の初期化
         xExtent = d3.extent(dataSet, function(d){ return d.yr_m; })
         //yExtent = d3.extent(dataSet, function(d){ return d.in_jp; })  
@@ -106,7 +96,7 @@ d3.csv("./data/timeSeriesData.csv").then(function(data){
         y.domain([
             d3.min(categories, d => d3.min(d.values, c => c.population)),
             d3.max(categories, d => d3.max(d.values, c => c.population))
-        ]);
+        ]).nice();
 
         g.append("g")
             .attr("class", "x axis");
@@ -120,8 +110,19 @@ d3.csv("./data/timeSeriesData.csv").then(function(data){
             .style("text-anchor", "end")
             .text("値の単位");
 
+
+        var category = svg.selectAll(".categories")
+        .data(categories);
+
+        category.exit().remove();
+        
         g.append("path")
-            .attr("class", "line css-jp")
+            //.attr("class", "line css-jp")
+            .attr("class", "line categories")
+            .style("stroke", d => z(d.id))
+            .merge(category)
+            .transition().duration(100)
+            .attr("d", d => line(d.values))
 
     }
 
