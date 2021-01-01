@@ -89,10 +89,8 @@ d3.csv("./data/timeSeriesData.csv").then(function(data){
             };
         });
 
-        // scale の初期化
-        xExtent = d3.extent(dataSet, function(d){ return d.yr_m; })
-        //yExtent = d3.extent(dataSet, function(d){ return d.in_jp; })  
-        x.domain(xExtent);
+        // scale の初期化 
+        x.domain(d3.extent(dataSet, function(d){ return d.yr_m; }));
         y.domain([
             d3.min(categories, d => d3.min(d.values, c => c.population)),
             d3.max(categories, d => d3.max(d.values, c => c.population))
