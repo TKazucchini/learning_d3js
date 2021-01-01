@@ -44,8 +44,6 @@ body {
 <font style="font-size:11px;">人の流れ:</font>
 <select id="selectbox">
 	<option value="_">すべて</option>
-	<option value="in_">入国</option>
-	<option value="em_">出国</option>
 </select>
 
 <svg id="chart" width="850" height="410"></svg>
@@ -83,7 +81,7 @@ function chart(data) {
 	var z = d3.scaleOrdinal(d3.schemeCategory10);
 
 	var line = d3.line()
-		.curve(d3.curveCardinal)
+		//.curve(d3.curveCardinal)
 		.x(d => x(d.date))
 		.y(d => y(d.degrees));
 
