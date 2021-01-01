@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <head>
 <meta charset="utf-8">
-<script src="https://d3js.org/d3.v5.min.js"></script>
+<script src="https://d3js.org/d3.v6.min.js"></script>
 <style>
 
 body {
@@ -41,10 +41,11 @@ body {
 
 <body>
 
-<font style="font-size:11px;">Change metric:</font>
+<font style="font-size:11px;">人の流れ:</font>
 <select id="selectbox">
-	<option value="in_">Fahrenheit</option>
-	<option value="em_">Celsius</option>
+	<option value="_">すべて</option>
+	<option value="in_">入国</option>
+	<option value="em_">出国</option>
 </select>
 
 <svg id="chart" width="850" height="410"></svg>
