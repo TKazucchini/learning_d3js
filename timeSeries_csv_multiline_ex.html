@@ -108,11 +108,11 @@ input[name = "category_btn_tr"]:checked + label {
 -->
 
 <div id = selectbox>
-	<input type = "checkbox" name = "category_btn_jp" value = "jp" id = "jp">
+	<input type = "checkbox" name = "category_btn_jp" value = "jp" id = "jp" class = "selectBox">
 		<label for = "jp" class = label_jp>日本人</label>
-	<input type = "checkbox" name = "category_btn_fr" value = "fr" id = "fr">
+	<input type = "checkbox" name = "category_btn_fr" value = "fr" id = "fr" class = "selectBox">
 		<label for = "fr" class = label_fr>外国人</label>
-	<input type = "checkbox" name = "category_btn_tr" value = "tr" id = "tr">
+	<input type = "checkbox" name = "category_btn_tr" value = "tr" id = "tr" class = "selectBox">
 		<label for = "tr" class = label_tr>条約付</label>
 </div>
 
@@ -187,10 +187,13 @@ function chart(data) {
 		.attr("height", height)
 
 	//update(d3.select('#selectbox').property('value'), 0);
-	//console.log("original is.. " + d3.select('#selectbox').property('value'));
+	console.log("original is.. " + d3.select('#selectbox').property('value'));
 
-	update(d3.selectAll('input').property('checked', true), 0);
-	//console.log("I suppose.. " + d3.selectAll('input').property('checked', true));
+	//update(d3.selectAll('input').property('checked', true), 0);
+	console.log("I suppose 1st .. " + d3.selectAll('input').property('checked'));
+
+	update(d3.selectAll('.selectBox').on('change', function() { return this.checked }), 0);
+	console.log("I suppose 2nd .. " + d3.selectAll('.selectBox').on('change', function() { return this.checked }));
 
 	function update(input, speed) {
 
