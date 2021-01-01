@@ -187,14 +187,6 @@ function chart(data) {
 		.attr("height", height)
 
 	//update(d3.select('#selectbox').property('value'), 0);
-	console.log("original is.. " + d3.select('#selectbox').property('value'));
-
-	//update(d3.selectAll('input').property('checked', true), 0);
-	console.log("I suppose 1st .. " + d3.selectAll('input').property('checked'));
-
-	//update(d3.selectAll('.selectBox').on('change', function() { return this.checked }), 0);
-	console.log("I suppose 2nd .. " + d3.selectAll('.selectBox').on('change', function() { return this.checked }));
-
 
 	var choices = [];
 	d3.selectAll(".selectBox").each(function(d){
@@ -204,28 +196,29 @@ function chart(data) {
 		}
 	});
 
-	//update(choices, 0);
-	console.log("I suppose 3rd .. " + choices)
+	update(choices, 10);
+	console.log("I suppose .. " + choices)
 
-	//update(d3.selectAll('.selectBox').property('value'), 0);
-	console.log("I suppose 4th .. " + d3.selectAll('.selectBox').property('value'));
-
-	update(d3.selectAll('.selectBox').each(function(d){
-		cb = d3.select(this);
-		if(cb.property("checked")){
-			return cb.property("value");
-		}
-	}), 0);
-	console.log("I suppose 5th .. " + d3.selectAll('.selectBox').each(function(d){
-		cb = d3.select(this);
-		if(cb.property("checked")){
-			return cb.property("value");
-		}
-	}));
 
 	function update(input, speed) {
+	/*
+		function update(speed) {
 
-		var copy = keys.filter(f => f.includes(input))
+		var choices = [];
+		d3.selectAll(".selectBox").each(function(d){
+			cb = d3.select(this);
+			if(cb.property("checked")){
+		
+				var copy = keys.filter(f => f.includes(cb.property("value")))
+
+				// ここに全部内包する？？
+
+			}
+		});
+
+		*/
+		
+		var copy = keys.filter(f => f.includes(input))  // １）ここの意味をもう少し理解して、２）input を動的に動かす取得方法を確認
 
 		var categories = copy.map(function(id) {
 			return {
@@ -320,7 +313,7 @@ function chart(data) {
 		}
 	}
 
-	var selectbox = d3.select("#selectbox")
+	var selectbox = d3.select("#selectbox")   // そもそもこれが無いと select box のやつも動的に動かないものなの？動的に動かすやり方を学んだ方が良い
 		.on("change", function() {
 			update(this.value, 750);
 		})
