@@ -210,13 +210,13 @@ function chart(data) {
 	//update(d3.selectAll('.selectBox').property('value'), 0);
 	console.log("I suppose 4th .. " + d3.selectAll('.selectBox').property('value'));
 
-	update(d3.selectAll('.selectBox').earch(function(d){
+	update(d3.selectAll('.selectBox').each(function(d){
 		cb = d3.select(this);
 		if(cb.property("checked")){
 			return cb.property("value");
 		}
 	}), 0);
-	console.log("I suppose 5th .. " + d3.selectAll('.selectBox').earch(function(d){
+	console.log("I suppose 5th .. " + d3.selectAll('.selectBox').each(function(d){
 		cb = d3.select(this);
 		if(cb.property("checked")){
 			return cb.property("value");
