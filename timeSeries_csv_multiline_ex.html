@@ -186,10 +186,11 @@ function chart(data) {
 		.attr("width", width - margin.right - margin.left)
 		.attr("height", height)
 
-	update(d3.select('#selectbox').property('value'), 0);
+	//update(d3.select('#selectbox').property('value'), 0);
+	//console.log("original is.. " + d3.select('#selectbox').property('value'));
 
-	console.log("original is.. " + d3.select('#selectbox').property('value'));
-	console.log("I suppose.. " + d3.selectAll('input').property('checked', true));
+	update(d3.selectAll('input').property('checked', true), 0);
+	//console.log("I suppose.. " + d3.selectAll('input').property('checked', true));
 
 	function update(input, speed) {
 
