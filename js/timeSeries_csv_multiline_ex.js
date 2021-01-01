@@ -1,5 +1,5 @@
 
-d3.csv("./data/timeSeriesData.csv").then(d => chart(d))
+d3.csv("./data/timeSeriesData_ex.csv").then(d => chart(d))
 
 function chart(data) {
 
