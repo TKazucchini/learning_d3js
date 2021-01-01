@@ -43,7 +43,9 @@ body {
 
 <font style="font-size:11px;">人の流れ:</font>
 <select id="selectbox">
-	<option value="_">すべて</option>
+	<option value="_jp">日本人</option>
+	<option value="_fr">外国人</option>
+	<option value="_tr">条約付</option>
 </select>
 
 <svg id="chart" width="850" height="410"></svg>
@@ -67,7 +69,7 @@ function chart(data) {
 	})
 
 	var svg = d3.select("#chart"),
-		margin = {top: 15, right: 35, bottom: 15, left: 35},
+		margin = {top: 5, right: 10, bottom: 5, left: 70},
 		width = +svg.attr("width") - margin.left - margin.right,
 		height = +svg.attr("height") - margin.top - margin.bottom;
 
@@ -88,7 +90,7 @@ function chart(data) {
 	svg.append("g")
 		.attr("class","x-axis")
 		.attr("transform", "translate(0," + (height - margin.bottom) + ")")
-		.call(d3.axisBottom(x).tickFormat(d3.timeFormat("%b")));
+		.call(d3.axisBottom(x).tickFormat(d3.timeFormat("%Y")));
 
 	svg.append("g")
 		.attr("class", "y-axis")
@@ -122,7 +124,7 @@ function chart(data) {
 
 		var copy = keys.filter(f => f.includes(input))
 
-		var cities = copy.map(function(id) {
+		var categories = copy.map(function(id) {
 			return {
 				id: id,
 				values: data.map(d => {return {date: d.date, degrees: +d[id]}})
@@ -130,23 +132,23 @@ function chart(data) {
 		});
 
 		y.domain([
-			d3.min(cities, d => d3.min(d.values, c => c.degrees)),
-			d3.max(cities, d => d3.max(d.values, c => c.degrees))
+			d3.min(categories, d => d3.min(d.values, c => c.degrees)),
+			d3.max(categories, d => d3.max(d.values, c => c.degrees))
 		]).nice();
 
 		svg.selectAll(".y-axis").transition()
 			.duration(speed)
 			.call(d3.axisLeft(y).tickSize(-width + margin.right + margin.left))
 
-		var city = svg.selectAll(".cities")
-			.data(cities);
+		var category = svg.selectAll(".categories")
+			.data(categories);
 
-		city.exit().remove();
+		category.exit().remove();
 
-		city.enter().insert("g", ".focus").append("path")
-			.attr("class", "line cities")
+		category.enter().insert("g", ".focus").append("path")
+			.attr("class", "line categories")
 			.style("stroke", d => z(d.id))
-			.merge(city)
+			.merge(category)
 		.transition().duration(speed)
 			.attr("d", d => line(d.values))
 
@@ -203,7 +205,7 @@ function chart(data) {
 			focus.selectAll(".lineHoverText")
 				.attr("transform", 
 					"translate(" + (x(d.date)) + "," + height / 2.5 + ")")
-				.text(e => e + " " + "º" + formatValue(d[e]));
+				.text(e => e + " " + formatValue(d[e]) + " 人");
 
 			x(d.date) > (width - width / 4) 
 				? focus.selectAll("text.lineHoverText")
