@@ -192,8 +192,20 @@ function chart(data) {
 	//update(d3.selectAll('input').property('checked', true), 0);
 	console.log("I suppose 1st .. " + d3.selectAll('input').property('checked'));
 
-	update(d3.selectAll('.selectBox').on('change', function() { return this.checked }), 0);
+	//update(d3.selectAll('.selectBox').on('change', function() { return this.checked }), 0);
 	console.log("I suppose 2nd .. " + d3.selectAll('.selectBox').on('change', function() { return this.checked }));
+
+
+	var choices = [];
+	d3.selectAll(".selectBox").each(function(d){
+		cb = d3.select(this);
+		if(cb.property("checked")){
+			choices.push(cb.property("value"));
+		}
+	});
+
+	console.log("I suppose 3rd .. " + choices)
+	update(choices, 0);
 
 	function update(input, speed) {
 
