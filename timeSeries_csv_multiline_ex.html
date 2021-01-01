@@ -207,8 +207,8 @@ function chart(data) {
 	//update(choices, 0);
 	console.log("I suppose 3rd .. " + choices)
 
-	update(d3.select('.selectBox').property('value'), 0);
-	console.log("I suppose 4th .. " + d3.select('.selectBox').property('value'));
+	update(d3.selectAll('.selectBox').property('value'), 0);
+	console.log("I suppose 4th .. " + d3.selectAll('.selectBox').property('value'));
 
 	function update(input, speed) {
 
