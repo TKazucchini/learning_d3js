@@ -204,8 +204,11 @@ function chart(data) {
 		}
 	});
 
+	//update(choices, 0);
 	console.log("I suppose 3rd .. " + choices)
-	update(choices, 0);
+
+	update(d3.select('.selectBox').property('value'), 0);
+	console.log("I suppose 4th .. " + d3.select('.selectBox').property('value'));
 
 	function update(input, speed) {
 
