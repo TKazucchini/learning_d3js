@@ -36,7 +36,12 @@ body {
 	opacity: .75;
 }
 
-<!-- ここから timeSeries フィルタースタイル -->
+/*
+
+	ここから timeSeries フィルタースタイル 
+
+*/
+
 
 input[type = checkbox] {
     display: none;
@@ -182,6 +187,9 @@ function chart(data) {
 		.attr("height", height)
 
 	update(d3.select('#selectbox').property('value'), 0);
+
+	console.log("original is.. " + d3.select('#selectbox').property('value'));
+	console.log("I suppose.. " + d3.selectAll('input').property('checked', true));
 
 	function update(input, speed) {
 
