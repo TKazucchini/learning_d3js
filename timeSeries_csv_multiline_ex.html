@@ -205,10 +205,11 @@ function chart(data) {
 		
 		// input は string を想定しているため、リストオブジェクトにそもそも対応していないような動き。
 		//var copy = keys.filter(f => f.includes(input))  // １）ここの意味をもう少し理解して、２）input を動的に動かす取得方法を確認
-		var copy = keys.filter(f => f.includes(input))
+		var copy = keys.filter(f => f.includes(choices))
 
 
 		console.log(keys);
+		console.log(choices);
 		console.log(copy);
 
 
