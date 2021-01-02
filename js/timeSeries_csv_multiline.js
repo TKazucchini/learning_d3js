@@ -14,7 +14,7 @@ function chart(data) {
         return d;
     })
 
-    var svg = d3.select("#chart"),
+    var svg = d3.select("#timeSeries"),
         margin = {top: 5, right: 10, bottom: 5, left: 70},
         width = +svg.attr("width") - margin.left - margin.right,
         height = +svg.attr("height") - margin.top - margin.bottom;
