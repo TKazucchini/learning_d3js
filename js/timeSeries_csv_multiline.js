@@ -40,7 +40,7 @@ d3.csv("./data/timeSeriesData_ex.csv").then(d => chart(d))
 
 function chart(data) {
 
-    var keys = [  "in_jp", "in_fr", "in_tr", "em_jp", "em_fr", "em_tr" ] //data.columns.slice(1);
+    var keys = data.columns.slice(1);
 
     var parseTime = d3.timeParse("%Y-%m-%d"),
         formatDate = d3.timeFormat("%Y-%m-%d"),
