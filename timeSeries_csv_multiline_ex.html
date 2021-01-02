@@ -153,7 +153,7 @@ function chart(data) {
 	var line = d3.line()
 		//.curve(d3.curveCardinal)
 		.x(d => x(d.date))
-		.y(d => y(d.degrees));
+		.y(d => y(d.people));
 
 	svg.append("g")
 		.attr("class","x-axis")
@@ -201,35 +201,21 @@ function chart(data) {
 
 
 	function update(input, speed) {
-	/*
-		function update(speed) {
 
-		var choices = [];
-		d3.selectAll(".selectBox").each(function(d){
-			cb = d3.select(this);
-			if(cb.property("checked")){
 		
-				var copy = keys.filter(f => f.includes(cb.property("value")))
+		// input は string を想定しているため、リストオブジェクトにそもそも対応していないような動き。
+		//var copy = keys.filter(f => f.includes(input))  // １）ここの意味をもう少し理解して、２）input を動的に動かす取得方法を確認
 
-				// ここに全部内包する？？
-
-			}
-		});
-
-		*/
-		
-		var copy = keys.filter(f => f.includes(input))  // １）ここの意味をもう少し理解して、２）input を動的に動かす取得方法を確認
-
-		var categories = copy.map(function(id) {
+		var categories = keys.map(function(id) {
 			return {
 				id: id,
-				values: data.map(d => {return {date: d.date, degrees: +d[id]}})
+				values: data.map(d => {return {date: d.date, people: +d[id]}})
 			};
 		});
 
 		y.domain([
-			d3.min(categories, d => d3.min(d.values, c => c.degrees)),
-			d3.max(categories, d => d3.max(d.values, c => c.degrees))
+			d3.min(categories, d => d3.min(d.values, c => c.people)),
+			d3.max(categories, d => d3.max(d.values, c => c.people))
 		]).nice();
 
 		svg.selectAll(".y-axis").transition()
@@ -248,13 +234,13 @@ function chart(data) {
 		.transition().duration(speed)
 			.attr("d", d => line(d.values))
 
-		tooltip(copy);
+		tooltip(keys);
 	}
 
-	function tooltip(copy) {
+	function tooltip(keys) {
 		
 		var labels = focus.selectAll(".lineHoverText")
-			.data(copy)
+			.data(keys)
 
 		labels.enter().append("text")
 			.attr("class", "lineHoverText")
@@ -265,7 +251,7 @@ function chart(data) {
 			.merge(labels);
 
 		var circles = focus.selectAll(".hoverCircle")
-			.data(copy)
+			.data(keys)
 
 		circles.enter().append("circle")
 			.attr("class", "hoverCircle")
