@@ -122,6 +122,8 @@ input[name = "category_btn_tr"]:checked + label {
 
 d3.csv("./data/timeSeriesData_ex.csv").then(d => chart(d))
 
+
+
 function chart(data) {
 
 	var keys = data.columns.slice(1);
