@@ -73,12 +73,12 @@ function chart(data) {
 
     svg.append("g")
         .attr("class","x-axis")
-        .attr("transform", "translate(0," + (height - margin.bottom) + ")")
+        //.attr("transform", "translate(0," + (height - margin.bottom) + ")")
         .call(d3.axisBottom(x).tickFormat(d3.timeFormat("%Y")));
 
     svg.append("g")
         .attr("class", "y-axis")
-        .attr("transform", "translate(" + margin.left + ",0)");
+        //.attr("transform", "translate(" + margin.left + ",0)");
 
     var focus = svg.append("g")
         .attr("class", "focus")
@@ -99,8 +99,8 @@ function chart(data) {
     var overlay = svg.append("rect")
         .attr("class", "overlay")
         .attr("x", margin.left)
-        .attr("width", width - margin.right - margin.left)
-        .attr("height", height)
+        //.attr("width", width - margin.right - margin.left)
+        //.attr("height", height)
 
 
     update();
