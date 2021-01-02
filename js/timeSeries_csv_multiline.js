@@ -205,9 +205,6 @@ function chart(data) {
                     .attr("text-anchor", "start")
                     .attr("dx", 10)
         }
-    }
-
-
 
 
         // SVGのサイズ（横幅）を取得
@@ -254,7 +251,7 @@ function chart(data) {
     update();
     win.on("resize", update);
 
-});
+};
 
 
 // オブジェクトのコピーを作成する簡易ヘルパー
