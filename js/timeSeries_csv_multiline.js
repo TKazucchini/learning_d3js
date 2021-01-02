@@ -128,7 +128,7 @@ function chart(data) {
 
         svg.selectAll(".y-axis").transition()
             .duration(speed)
-            .call(d3.axisLeft(y).tickSize(-width + margin.right + margin.left))
+            .call(d3.axisLeft(y))//.tickSize(-width + margin.right + margin.left))
 
         var category = svg.selectAll(".categories")
             .data(categories);
