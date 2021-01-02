@@ -58,7 +58,7 @@ function chart(data) {
         //height = +svg.attr("height") - margin.top - margin.bottom;
 
     var x = d3.scaleTime()
-        .rangeRound([margin.left, width - margin.right])
+        //.rangeRound([margin.left, width - margin.right])
         .domain(d3.extent(data, d => d.date))
 
     var y = d3.scaleLinear()
