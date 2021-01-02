@@ -89,7 +89,7 @@ function chart(data) {
         .attr("stroke-width", 1)
         .style("shape-rendering", "crispEdges")
         .style("opacity", 0.5)
-        .attr("y1", -height)
+        //.attr("y1", -height)
         .attr("y2",0);
 
     focus.append("text").attr("class", "lineHoverDate")
