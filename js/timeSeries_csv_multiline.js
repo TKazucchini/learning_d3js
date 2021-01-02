@@ -62,7 +62,7 @@ function chart(data) {
         .domain(d3.extent(data, d => d.date))
 
     var y = d3.scaleLinear()
-        .rangeRound([height - margin.bottom, margin.top]);
+        //.rangeRound([height - margin.bottom, margin.top]);
 
     var z = d3.scaleOrdinal(d3.schemeCategory10);
 
