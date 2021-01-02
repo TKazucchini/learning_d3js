@@ -1,41 +1,3 @@
-// このファイルで 複数列の表示を作成。別 js ファイル multiline を参照して統合したい
-
-
-//var svgWidth = 320;
-//var svgHeight = 240;
-
-var margin = {
-    top: 5,
-    right: 10,
-    bottom: 5,
-    left: 70
-}
-
-
-var size = {
-    width: document.getElementsByClassName('time-series')[0].clientWidth,
-    height: document.getElementsByClassName('time-series')[0].clientHeight
-}
-
-
-/*
-var size = {
-    width: 800,
-    height: 400
-}
-*/
-
-
-// 元のサイズを保持しておく
-margin.original = clone(margin);
-size.original = clone(size);
-
-// 縦横比率と現在の倍率を保持しておく
-size.scale = 1;
-//size.aspect = size.width / size.height;
-
-//表示するデータ
-
 d3.csv("./data/timeSeriesData.csv").then(d => chart(d))
 
 function chart(data) {
@@ -52,17 +14,17 @@ function chart(data) {
         return d;
     })
 
-    var svg = d3.select("#timeSeries")//,
-        //margin = {top: 5, right: 10, bottom: 5, left: 70},
-        //width = +svg.attr("width") - margin.left - margin.right,
-        //height = +svg.attr("height") - margin.top - margin.bottom;
+    var svg = d3.select("#chart"),
+        margin = {top: 5, right: 10, bottom: 5, left: 70},
+        width = +svg.attr("width") - margin.left - margin.right,
+        height = +svg.attr("height") - margin.top - margin.bottom;
 
     var x = d3.scaleTime()
-        //.rangeRound([margin.left, width - margin.right])
+        .rangeRound([margin.left, width - margin.right])
         .domain(d3.extent(data, d => d.date))
 
     var y = d3.scaleLinear()
-        //.rangeRound([height - margin.bottom, margin.top]);
+        .rangeRound([height - margin.bottom, margin.top]);
 
     var z = d3.scaleOrdinal(d3.schemeCategory10);
 
@@ -73,12 +35,12 @@ function chart(data) {
 
     svg.append("g")
         .attr("class","x-axis")
-        //.attr("transform", "translate(0," + (height - margin.bottom) + ")")
+        .attr("transform", "translate(0," + (height - margin.bottom) + ")")
         .call(d3.axisBottom(x).tickFormat(d3.timeFormat("%Y")));
 
     svg.append("g")
         .attr("class", "y-axis")
-        //.attr("transform", "translate(" + margin.left + ",0)");
+        .attr("transform", "translate(" + margin.left + ",0)");
 
     var focus = svg.append("g")
         .attr("class", "focus")
@@ -89,7 +51,7 @@ function chart(data) {
         .attr("stroke-width", 1)
         .style("shape-rendering", "crispEdges")
         .style("opacity", 0.5)
-        //.attr("y1", -height)
+        .attr("y1", -height)
         .attr("y2",0);
 
     focus.append("text").attr("class", "lineHoverDate")
@@ -99,16 +61,15 @@ function chart(data) {
     var overlay = svg.append("rect")
         .attr("class", "overlay")
         .attr("x", margin.left)
-        //.attr("width", width - margin.right - margin.left)
-        //.attr("height", height)
+        .attr("width", width - margin.right - margin.left)
+        .attr("height", height)
 
 
     update();
-    /// ここまでループ こんな感じ
 
-    // グラフサイズの更新
-    function update(input, speed){
+    function update(input, speed) {
 
+        
         // input は string を想定しているため、リストオブジェクトにそもそも対応していないような動き。
         //var copy = keys.filter(f => f.includes(input))  // １）ここの意味をもう少し理解して、２）input を動的に動かす取得方法を確認
         
@@ -128,7 +89,7 @@ function chart(data) {
 
         svg.selectAll(".y-axis").transition()
             .duration(speed)
-            .call(d3.axisLeft(y))//.tickSize(-width + margin.right + margin.left))
+            .call(d3.axisLeft(y).tickSize(-width + margin.right + margin.left))
 
         var category = svg.selectAll(".categories")
             .data(categories);
@@ -205,60 +166,5 @@ function chart(data) {
                     .attr("text-anchor", "start")
                     .attr("dx", 10)
         }
-
-
-        // SVGのサイズ（横幅）を取得
-        size.width = parseInt(svg.style("width"));
-
-        // 現在の倍率を元に余白の量も更新
-        // 最小値がそれぞれ30pxになるように調整しておく
-        size.scale = size.width / size.original.width;
-        margin.top    = Math.max(20, margin.original.top * size.scale);
-        margin.right  = Math.max(20, margin.original.right * size.scale);
-        margin.bottom = Math.max(20, margin.original.bottom * size.scale);
-        margin.left   = Math.max(20, margin.original.left * size.scale);
-
-        // <svg>のサイズを更新
-        svg
-        .attr("width", size.width)
-        .attr("height", size.height);
-
-        // 縦横の最大幅を新しいサイズに合わせる
-        x.range([0, size.width - margin.left - margin.right]);
-        y.range([size.height - margin.top - margin.bottom, 0]);
-
-        // 中心位置を揃える
-        g.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-        // 横軸の位置
-        g.selectAll("g.x")
-        .attr("transform", "translate(0, " + ( size.height - margin.top - margin.bottom ) + ")")
-        .call(xAxis);
-
-        // 縦軸の位置
-        g.selectAll("g.y")
-        .call(yAxis);
-
-        // 折れ線の位置
-        g.selectAll("path.line")
-        .datum(dataSet)
-        .attr("d", line);
-
     }
-
-    // 初期化
-    render();
-    update();
-    win.on("resize", update);
-
-};
-
-
-// オブジェクトのコピーを作成する簡易ヘルパー
-function clone(obj){
-var copy = {};
-for( var attr in obj ){
-    if( obj.hasOwnProperty(attr) ) copy[attr] = obj[attr];
-}
-return copy;
 }
