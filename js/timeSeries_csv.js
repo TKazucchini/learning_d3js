@@ -34,11 +34,14 @@ size.scale = 1;
 //表示するデータ
 d3.csv("./data/timeSeriesData.csv").then(function(data){
     
+    /*
     var dataSet = [];
     for(var i = 0; i < data.length; i++){
         dataSet.push(data[i]);
     };
+    */
 
+    var keys = data.columns.slice(1);
 
     // 時間のフォーマット
     var parseDate = d3.timeParse("%Y-%m-%d"); // 変換関数の定義
@@ -57,31 +60,32 @@ d3.csv("./data/timeSeriesData.csv").then(function(data){
     var yAxis = d3.axisLeft()
         .scale(y);
 
-    // 簡潔 json
-    //drawGraph(dataSet, "jp", "css-jp");
-    //drawGraph(dataSet, "fr", "css-fr");
-    //drawGraph(dataSet, "tr", "css-tr");
-
     // 折れ線グラフの座標値を計算するメソッド
     var line = d3.line()
-    .x(function(d){ return x(d.yr_m); })
-    .y(function(d){ return y(d.in_jp); });
+    .x(function(d){ return x(d.date); })
+    .y(function(d){ return y(d.population); });
 
 
     // 折れ線グラフの描画
     function render(){
-        dataSet.forEach(function(d){
-            d.yr_m = parseDate(d.yr_m);
-            d.in_jp = +d.in_jp;
+        data.forEach(function(d){
+            d.date = parseDate(d.date);
+        }); 
+
+        var categories = keys.map(function(id) {
+            return {
+                id: id,
+                values: data.map(d => {return {date: d.date, population: +d[id]}})
+            };
         });
 
-        //console.log(dataSet.in_jp);  // undifined になる。多分カラムの指定方法が決まってる。 
-
         // scale の初期化
-        xExtent = d3.extent(dataSet, function(d){ return d.yr_m; })
-        yExtent = d3.extent(dataSet, function(d){ return d.in_jp; })
-        x.domain(xExtent);
-        y.domain(yExtent);
+        x.domain(d3.extent(dataSet, function(d){ return d.date; }));
+        y.domain([
+            d3.min(categories, d => d3.min(d.values, c => c.population)),
+            d3.max(categories, d => d3.max(d.values, c => c.population))
+        ]).nice();
+
 
         g.append("g")
             .attr("class", "x axis");
@@ -95,13 +99,21 @@ d3.csv("./data/timeSeriesData.csv").then(function(data){
             .style("text-anchor", "end")
             .text("値の単位");
 
-        g.append("path")
-            .attr("class", "line css-jp")
+
+        var category = svg.selectAll(".categories")
+            .data(categories);
+
+        category.exit().remove();
+
+        category.enter().insert("g").append("path")
+            .attr("class", "line categories")
+            .style("stroke", d => z(d.id))
+            .merge(category)
+        .transition().duration(100)
+            .attr("d", d => line(d.values))
 
     }
 
-
-    /// ここまでループ こんな感じ
 
     // グラフサイズの更新
     function update(){
