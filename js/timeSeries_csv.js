@@ -60,6 +60,9 @@ d3.csv("./data/timeSeriesData.csv").then(function(data){
     var yAxis = d3.axisLeft()
         .scale(y);
 
+
+    var z = d3.scaleOrdinal(d3.schemeCategory10);
+
     // 折れ線グラフの座標値を計算するメソッド
     var line = d3.line()
     .x(function(d){ return x(d.date); })
