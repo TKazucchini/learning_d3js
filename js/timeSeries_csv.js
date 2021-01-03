@@ -80,7 +80,7 @@ d3.csv("./data/timeSeriesData.csv").then(function(data){
         });
 
         // scale の初期化
-        x.domain(d3.extent(dataSet, function(d){ return d.date; }));
+        x.domain(d3.extent(data, d => d.date));
         y.domain([
             d3.min(categories, d => d3.min(d.values, c => c.population)),
             d3.max(categories, d => d3.max(d.values, c => c.population))
