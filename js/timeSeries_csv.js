@@ -153,11 +153,12 @@ d3.csv("./data/timeSeriesData.csv").then(function(data){
         g.selectAll("g.y")
         .call(yAxis);
 
+        /*
         // 折れ線の位置
         g.selectAll("path.line")
         .datum(data)
         .attr("d", line);
-
+        */
     }
 
     // 初期化
