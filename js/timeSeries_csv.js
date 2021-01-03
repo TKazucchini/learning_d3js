@@ -155,7 +155,7 @@ d3.csv("./data/timeSeriesData.csv").then(function(data){
 
         // 折れ線の位置
         g.selectAll("path.line")
-        .datum(dataSet)
+        .datum(data)
         .attr("d", line);
 
     }
