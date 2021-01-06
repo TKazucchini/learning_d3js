@@ -65,8 +65,8 @@ d3.csv("./data/timeSeriesData.csv").then(function(data){
 
     // 折れ線グラフの座標値を計算するメソッド
     var line = d3.line()
-    .x(function(d){ return x(d.date); })
-    .y(function(d){ return y(d.population); });
+    .x(d => x(d.date))
+    .y(d => y(d.people));
 
 
     // 折れ線グラフの描画
@@ -91,10 +91,10 @@ d3.csv("./data/timeSeriesData.csv").then(function(data){
 
 
         g.append("g")
-            .attr("class", "x axis");
+            .attr("class", "x-axis");
 
         g.append("g")
-            .attr("class", "y axis")
+            .attr("class", "y-axis")
             .append("text")
             .attr("transform", "rotate(-90)")
             .attr("y", 6)
