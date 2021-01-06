@@ -91,10 +91,10 @@ d3.csv("./data/timeSeriesData.csv").then(function(data){
 
 
         g.append("g")
-            .attr("class", "x-axis");
+            .attr("class", "x axis");
 
         g.append("g")
-            .attr("class", "y-axis")
+            .attr("class", "y axis")
             .append("text")
             .attr("transform", "rotate(-90)")
             .attr("y", 6)
