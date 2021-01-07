@@ -1,178 +1,165 @@
-//var svgWidth = 320;
-//var svgHeight = 240;
-
-var margin = {
-    top: 5,
-    right: 50,
-    bottom: 5,
-    left: 50
-}
-
-
-var size = {
-    width: document.getElementsByClassName('time-series')[0].clientWidth,
-    height: document.getElementsByClassName('time-series')[0].clientHeight
-}
-
-
-/*
-var size = {
-    width: 800,
-    height: 400
-}
-*/
-
-
-// 元のサイズを保持しておく
-margin.original = clone(margin);
-size.original = clone(size);
-
-// 縦横比率と現在の倍率を保持しておく
-size.scale = 1;
-//size.aspect = size.width / size.height;
-
 //表示するデータ
-d3.csv("./data/timeSeriesData.csv").then(function(data){
+d3.csv("./data/timeSeriesData.csv").then(d => drawTimeSeries(d))
     
-    /*
-    var dataSet = [];
-    for(var i = 0; i < data.length; i++){
-        dataSet.push(data[i]);
-    };
-    */
+function drawTimeSeries(data) {
+    
+    var parseTime = d3.timeParse("%Y-%m-%d"),
+    formatDate = d3.timeFormat("%Y-%m-%d"),
+    bisectDate = d3.bisector(d => d.date).left,
+    formatValue = d3.format(",.0f");
 
-    var keys = data.columns.slice(1);
+    data.forEach(function(d) {
+    d.date = parseTime(d.date);
+    return d;
+    })
 
-    // 時間のフォーマット
-    var parseDate = d3.timeParse("%Y-%m-%d"); // 変換関数の定義
+    var svg = d3.select("#timeSeries"),
+    margin = {top: 5, right: 10, bottom: 5, left: 70},
+    width = +document.getElementsByClassName('time-series')[0].clientWidth - margin.left - margin.right,
+    height = +document.getElementsByClassName('time-series')[0].clientHeight - margin.top - margin.bottom;
 
-    // SVG 縦横軸などの設定
-    var win = d3.select(window);
-    var svg = d3.select("#timeSeries")
-    var g = svg.append("g")
-    var x = d3.scaleTime();
-    var y = d3.scaleLinear();
+    var x = d3.scaleTime()
+    .rangeRound([margin.left, width - margin.right])
+    .domain(d3.extent(data, d => d.date))
 
-    var xAxis = d3.axisBottom()
-        .scale(x)
-        .tickFormat(d3.timeFormat("%Y-%m"));
-
-    var yAxis = d3.axisLeft()
-        .scale(y);
-
+    var y = d3.scaleLinear()
+    .rangeRound([height - margin.bottom, margin.top]);
 
     var z = d3.scaleOrdinal(d3.schemeCategory10);
 
-    // 折れ線グラフの座標値を計算するメソッド
     var line = d3.line()
+    //.curve(d3.curveCardinal)
     .x(d => x(d.date))
     .y(d => y(d.people));
 
+    svg.append("g")
+    .attr("class","x-axis")
+    .attr("transform", "translate(0," + (height - margin.bottom) + ")")
+    .call(d3.axisBottom(x).tickFormat(d3.timeFormat("%Y")));
 
-    // 折れ線グラフの描画
-    function render(){
-        data.forEach(function(d){
-            d.date = parseDate(d.date);
-        }); 
+    svg.append("g")
+    .attr("class", "y-axis")
+    .attr("transform", "translate(" + margin.left + ",0)");
 
-        var categories = keys.map(function(id) {
-            return {
-                id: id,
-                values: data.map(d => {return {date: d.date, population: +d[id]}})
-            };
-        });
+    var focus = svg.append("g")
+    .attr("class", "focus")
+    .style("display", "none");
 
-        // scale の初期化
-        x.domain(d3.extent(data, d => d.date));
-        y.domain([
-            d3.min(categories, d => d3.min(d.values, c => c.population)),
-            d3.max(categories, d => d3.max(d.values, c => c.population))
-        ]).nice();
+    focus.append("line").attr("class", "lineHover")
+    .style("stroke", "#999")
+    .attr("stroke-width", 1)
+    .style("shape-rendering", "crispEdges")
+    .style("opacity", 0.5)
+    .attr("y1", -height)
+    .attr("y2",0);
 
+    focus.append("text").attr("class", "lineHoverDate")
+    .attr("text-anchor", "middle")
+    .attr("font-size", 12);
 
-        g.append("g")
-            .attr("class", "x axis");
-
-        g.append("g")
-            .attr("class", "y axis")
-            .append("text")
-            .attr("transform", "rotate(-90)")
-            .attr("y", 6)
-            .attr("dy", ".7em")
-            .style("text-anchor", "end")
-            .text("値の単位");
+    var overlay = svg.append("rect")
+    .attr("class", "overlay")
+    .attr("x", margin.left)
+    .attr("width", width - margin.right - margin.left)
+    .attr("height", height)
 
 
-        var category = svg.selectAll(".categories")
-            .data(categories);
+    var keys = data.columns.slice(1);
+    update(keys, 10);
 
-        category.exit().remove();
+    function update(input, speed) {
 
-        category.enter().insert("g").append("path")
-            .attr("class", "line categories")
-            .style("stroke", d => z(d.id))
-            .merge(category)
-        .transition().duration(100)
-            .attr("d", d => line(d.values))
+    var categories = input.map(function(id) {
+        return {
+            id: id,
+            values: data.map(d => {return {date: d.date, people: +d[id]}})
+        };
+    });
 
+    y.domain([
+        d3.min(categories, d => d3.min(d.values, c => c.people)),
+        d3.max(categories, d => d3.max(d.values, c => c.people))
+    ]).nice();
+
+    svg.selectAll(".y-axis").transition()
+        .duration(speed)
+        .call(d3.axisLeft(y).tickSize(-width + margin.right + margin.left))
+
+    var category = svg.selectAll(".categories")
+        .data(categories);
+
+    category.exit().remove();
+
+    category.enter().insert("g", ".focus").append("path")
+        .attr("class", "line categories")
+        .style("stroke", d => z(d.id))
+        .merge(category)
+    .transition().duration(speed)
+        .attr("d", d => line(d.values))
+
+    tooltip(keys);
     }
 
+    function tooltip(keys) {
 
-    // グラフサイズの更新
-    function update(){
+        var labels = focus.selectAll(".lineHoverText")
+            .data(keys)
 
-        // SVGのサイズ（横幅）を取得
-        size.width = parseInt(svg.style("width"));
+        labels.enter().append("text")
+            .attr("class", "lineHoverText")
+            .style("fill", d => z(d))
+            .attr("text-anchor", "start")
+            .attr("font-size",12)
+            .attr("dy", (_, i) => 1 + i * 2 + "em")
+            .merge(labels);
 
-        // 現在の倍率を元に余白の量も更新
-        // 最小値がそれぞれ30pxになるように調整しておく
-        size.scale = size.width / size.original.width;
-        margin.top    = Math.max(20, margin.original.top * size.scale);
-        margin.right  = Math.max(20, margin.original.right * size.scale);
-        margin.bottom = Math.max(20, margin.original.bottom * size.scale);
-        margin.left   = Math.max(20, margin.original.left * size.scale);
+        var circles = focus.selectAll(".hoverCircle")
+            .data(keys)
 
-        // <svg>のサイズを更新
-        svg
-        .attr("width", size.width)
-        .attr("height", size.height);
+        circles.enter().append("circle")
+            .attr("class", "hoverCircle")
+            .style("fill", d => z(d))
+            .attr("r", 2.5)
+            .merge(circles);
 
-        // 縦横の最大幅を新しいサイズに合わせる
-        x.range([0, size.width - margin.left - margin.right]);
-        y.range([size.height - margin.top - margin.bottom, 0]);
+        svg.selectAll(".overlay")
+            .on("mouseover", function() { focus.style("display", null); })
+            .on("mouseout", function() { focus.style("display", "none"); })
+            .on("mousemove", mousemove);
 
-        // 中心位置を揃える
-        g.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+        function mousemove(event) {  // changed v6 event
 
-        // 横軸の位置
-        g.selectAll("g.x")
-        .attr("transform", "translate(0, " + ( size.height - margin.top - margin.bottom ) + ")")
-        .call(xAxis);
+            var x0 = x.invert(d3.pointer(event)[0]),  // changed v6 pointer
+                i = bisectDate(data, x0, 1),
+                d0 = data[i - 1],
+                d1 = data[i],
+                d = x0 - d0.date > d1.date - x0 ? d1 : d0;
 
-        // 縦軸の位置
-        g.selectAll("g.y")
-        .call(yAxis);
+            focus.select(".lineHover")
+                .attr("transform", "translate(" + x(d.date) + "," + height + ")");
 
-        // 折れ線の位置
-        g.selectAll("path.line")
-        .datum(data)
-        .attr("d", line);
-        //.attr("d", d => line(d.values));
+            focus.select(".lineHoverDate")
+                .attr("transform", 
+                    "translate(" + x(d.date) + "," + (height + margin.bottom) + ")")
+                .text(formatDate(d.date));
+
+            focus.selectAll(".hoverCircle")
+                .attr("cy", e => y(d[e]))
+                .attr("cx", x(d.date));
+
+            focus.selectAll(".lineHoverText")
+                .attr("transform", 
+                    "translate(" + (x(d.date)) + "," + height / 2.5 + ")")
+                .text(e => e + " " + formatValue(d[e]) + " 人");
+
+            x(d.date) > (width - width / 4) 
+                ? focus.selectAll("text.lineHoverText")
+                    .attr("text-anchor", "end")
+                    .attr("dx", -10)
+                : focus.selectAll("text.lineHoverText")
+                    .attr("text-anchor", "start")
+                    .attr("dx", 10)
+        }
     }
 
-    // 初期化
-    render();
-    update();
-    win.on("resize", update);
-
-});
-
-
-// オブジェクトのコピーを作成する簡易ヘルパー
-function clone(obj){
-var copy = {};
-for( var attr in obj ){
-    if( obj.hasOwnProperty(attr) ) copy[attr] = obj[attr];
-}
-return copy;
 }
