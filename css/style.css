@@ -15,44 +15,64 @@ html, body {
     box-sizing: border-box;
 }
 
-.date-filter {
-    width: 50%;
-    height: 10%;
-    border: solid 1px black;
+.main {
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
     float: left;
 }
 
-.geo-filter {
-    width: 49%;
-    height:100%;
-    margin: 0 auto;
+.left-col {
+    width: 50%;
+    height: 100%;
+    box-sizing: border-box;
+    float: left;
+}
+
+.date-filter {
+    width: 100%;
+    height: 10%;
+    box-sizing: border-box;
     border: solid 1px black;
-    float: right;
 }
 
 .time-series {
-    width: 50%;
+    width: 100%;
     height: 40%;
+    box-sizing: border-box;
     border: solid 1px black;
-    float: left;
 }
 
 .pie-charts {
-    width: 50%;
+    width: 100%;
     height: 50%;
     display: flex;
     justify-content: space-between;
+    box-sizing: border-box;
     border: solid 1px black;
-    float:left;
 }
 
 .pie-chart {
     display: block;
     flex-grow: 1;
     border: solid 1px black;
-    float: left;
+    box-sizing: border-box;
 }
 
+.right-col {
+    width: 49.8%;
+    display: flex;
+    box-sizing: border-box;
+    float: right;
+}
+
+.geo-filter {
+    width: 100%;
+    height: 100%;
+    justify-content: space-between;
+    box-sizing: border-box;
+    border: solid 1px black;
+}
 
 .footer {
     width: 100%;
@@ -60,6 +80,10 @@ html, body {
     padding: 1em;
     border: solid 1px black;
     box-sizing: border-box;
+    /* フッターがモバイル表示の時に一番下に来ない。
+    position:absolute;
+    bottom:0;
+    */
 }
 
 @media screen and (max-width: 720px) {
@@ -67,16 +91,20 @@ html, body {
     .geo-filter {
         display: none;
     }
-    .date-filter, .time-series {
+    .main {
         width: 100%;
     }
+    .date-filter, .time-series {
+        box-sizing: border-box;
+    }
     .pie-charts {
-        width: 100%;
         height: 70%;
         flex-direction: column;
+        box-sizing: border-box;
     }
     .pie-chart {
         width: 100%;
+        display: block;
     }
 }
 
