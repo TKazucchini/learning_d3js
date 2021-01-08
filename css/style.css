@@ -12,6 +12,7 @@ html, body {
     display: inline-block;
     padding: 1em;
     border: solid 1px black;
+    box-sizing: border-box;
 }
 
 .date-filter {
@@ -58,6 +59,7 @@ html, body {
     display: inline-block;
     padding: 1em;
     border: solid 1px black;
+    box-sizing: border-box;
 }
 
 @media screen and (max-width: 720px) {
