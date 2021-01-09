@@ -5,6 +5,8 @@
 html, body {
     height: 100%;
     font-family:sans-serif;
+    display: flex;
+    flex-direction: column;
 }
 
 .header {
@@ -76,22 +78,17 @@ html, body {
 
 .footer {
     width: 100%;
-    display: inline-block;
     padding: 1em;
     border: solid 1px black;
     box-sizing: border-box;
-    /* フッターがモバイル表示の時に一番下に来ない。
-    position:absolute;
-    bottom:0;
-    */
 }
 
 @media screen and (max-width: 720px) {
     /* 720px以下に適用されるCSS（タブレット用） */
-    .geo-filter {
+    .right-col {
         display: none;
     }
-    .main {
+    .left-col {
         width: 100%;
     }
     .date-filter, .time-series {
