@@ -9,35 +9,43 @@
 
 <body>
     <div class = header>
-        <h1>test</h1>
+        <h1>出入国者数の推移</h1>
         <p>出典：XXXXXXXXXXXXXX</p>
     </div>
-    <div class = geo-filter>
-        <p>Geo Filter</p>
-        <svg id = "geoFilter"></svg>
-        <!--<script src = "js/geoFilter.js"></script>-->
-    </div>
-    <div class = "date-filter"></div>
-    <div class = "time-series">
-        <!-- <p>Time Series Grpah</p> -->
-        <svg id = "timeSeries"></svg>
-    </div>
-    <div class = "pie-charts">
-        <div class = "pie-chart">
-            <p>Pie Chart A</p>
-            <svg id = "pieChartA"></svg>
-            <!--<script src = "js/pieCharts.js"></script>-->
+    <div class = "main">
+        <div class = "date-filter">
+            <p>Date Filter</p>
         </div>
-        <div class = "pie-chart">
-            <p>Pie Chart B</p>
-            <svg id = "pieChartB"></svg>
-            <!--<script src = "js/pieCharts.js"></script>-->
+        <div class = "left-col">
+            <div class = "time-series">
+                <!-- <p>Time Series Grpah</p> -->
+                <svg id = "timeSeries"></svg>
+                <script src = "js/timeSeries_csv.js"></script>
+            </div>
+            <div class = "pie-charts">
+                <div class = "pie-chart">
+                    <p>Pie Chart A</p>
+                    <svg id = "pieChartA"></svg>
+                    <!--<script src = "js/pieCharts.js"></script>-->
+                </div>
+                <div class = "pie-chart">
+                    <p>Pie Chart B</p>
+                    <svg id = "pieChartB"></svg>
+                    <!--<script src = "js/pieCharts.js"></script>-->
+                </div>
+            </div>
+        </div>
+        <div class = "right-col">
+            <div class = geo-filter>
+                <p>Geo Filter</p>
+                <svg id = "geoFilter"></svg>
+                <!--<script src = "js/geoFilter.js"></script>-->
+            </div>
         </div>
     </div>
     <div class = footer>
         <small>&copy; 2021 kazutak</small>
     </div>
-    <p>
 
 <script>
 
@@ -1543,7 +1551,7 @@ data.forEach(function(d) {
 })
 
 var svg = d3.select("#timeSeries"),
-	margin = {top: 5, right: 10, bottom: 5, left: 70},
+	margin = {top: 5, right: -30, bottom: 5, left: 70},
 	width = +document.getElementsByClassName('time-series')[0].clientWidth - margin.left - margin.right,
 	height = +document.getElementsByClassName('time-series')[0].clientHeight - margin.top - margin.bottom;
 
@@ -1552,7 +1560,9 @@ console.log(height);
 
 
 var x = d3.scaleTime()
-	.rangeRound([margin.left, width - margin.right])
+    .range([margin.left, width - margin.right])
+    //.rangeRound([margin.left, width - margin.right])
+    //.rangeRound([0, width])
 	.domain(d3.extent(data, d => d.date))
 
 var y = d3.scaleLinear()
@@ -1572,7 +1582,8 @@ svg.append("g")
 
 svg.append("g")
 	.attr("class", "y-axis")
-	.attr("transform", "translate(" + margin.left + ",0)");
+    .attr("transform", "translate(" + margin.left + ",0)");
+    
 
 var focus = svg.append("g")
 	.attr("class", "focus")

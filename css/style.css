@@ -86,7 +86,7 @@ html, body {
 @media screen and (max-width: 720px) {
     /* 720px以下に適用されるCSS（タブレット用） */
     .main {
-        height: 1300px;
+        height: 1200px;
     }
     .right-col {
         display: none;
@@ -99,7 +99,7 @@ html, body {
         box-sizing: border-box;
     }
     .time-series {
-        height: 400px;
+        height: 300px;
         box-sizing: border-box;
     }
     .pie-charts {

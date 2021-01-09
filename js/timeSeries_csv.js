@@ -14,7 +14,7 @@ function drawTimeSeries(data) {
     })
 
     var svg = d3.select("#timeSeries"),
-    margin = {top: 5, right: 0, bottom: 5, left: 70},
+    margin = {top: 5, right: -30, bottom: 5, left: 60},
     width = +document.getElementsByClassName('time-series')[0].clientWidth - margin.left - margin.right,
     height = +document.getElementsByClassName('time-series')[0].clientHeight - margin.top - margin.bottom;
 
