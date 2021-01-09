@@ -85,17 +85,25 @@ html, body {
 
 @media screen and (max-width: 720px) {
     /* 720px以下に適用されるCSS（タブレット用） */
+    .main {
+        height: 1300px;
+    }
     .right-col {
         display: none;
     }
     .left-col {
         width: 100%;
     }
-    .date-filter, .time-series {
+    .date-filter {
+        height: 100px;
+        box-sizing: border-box;
+    }
+    .time-series {
+        height: 400px;
         box-sizing: border-box;
     }
     .pie-charts {
-        height: 70%;
+        height: 800px;
         flex-direction: column;
         box-sizing: border-box;
     }
