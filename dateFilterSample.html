@@ -218,14 +218,14 @@ var y = d3.scaleLinear()
 	.range([height, 0])
     .domain(dataYrange);
 
-var xAxis = d3.axisBottom()
-	.scale(x)
+var xAxis = d3.axisBottom(x)
+	//.scale(x)
 	.tickSize(-(height))
-    .ticks(customTickFunction)
+    //.ticks(customTickFunction)    // これ作れない 日付データ綺麗に変更されない、、
     .tickFormat(dynamicDateFormat);
 
-var yAxis = d3.axisRight()
-	.scale(y)
+var yAxis = d3.axisRight(y)
+	//.scale(y)
     .ticks(4)
     .tickSize(-(width));
 
@@ -239,9 +239,9 @@ var y2 = d3.scaleLinear()
 	.range([height_context, 0])
     .domain(y.domain());
 
-var xAxis_context = d3.axisBottom()
-    .scale(x2)
-    .ticks(customTickFunction)
+var xAxis_context = d3.axisBottom(x2)
+    //.scale(x2)
+    //.ticks(customTickFunction)   // これ作れない 日付データ綺麗に変更されない、、
     .tickFormat(dynamicDateFormat);
 
 /*
@@ -278,15 +278,15 @@ var line_context = d3.line()
 * ========================================================================
 */
 
-var brush = d3.brush()
+var brush = d3.brushX()
     .extent([[0, 0], [width, height_context]])
     //.x(x2)
     .on("brush", brushed)
-    .on("brushend", brushend); // これ v6 でどう表現する？不要？
+    //.on("brushend", brushend); // これ v6 でどう表現する？不要？
 
 var zoom = d3.zoom()
     .on("zoom", draw)
-    .on("zoomend", brushend); // これ v6 でどう表現する？不要？
+    //.on("zoomend", brushend); // これ v6 でどう表現する？不要？
 
 /*
 * ========================================================================
@@ -462,7 +462,7 @@ vis.append("text")
     .style("text-anchor", "middle");
 
 // allows zooming before any brush action
-zoom.x(x);
+zoom.x(x);  // なぜかエラーになる Ver 6 との関係性不明
 
 /*
 * ========================================================================
@@ -528,7 +528,7 @@ function draw() {
     brush.extent(x.domain());
     vis.select(".brush").call(brush);
     // and update the text showing range of dates.
-    updateDisplayDates();
+    //updateDisplayDates();   // これ作れない 日付データ綺麗に変更されない、、
 };
 
 function brushend() {
@@ -545,8 +545,12 @@ function updateDisplayDates() {
 
     var b = brush.extent();
     // update the text that shows the range of displayed dates
-    var localBrushDateStart = (brush.empty()) ? DateFormat(dataXrange[0]) : DateFormat(b[0]),
-        localBrushDateEnd   = (brush.empty()) ? DateFormat(dataXrange[1]) : DateFormat(b[1]);
+//    var localBrushDateStart = (brush.empty()) ? DateFormat(dataXrange[0]) : DateFormat(b[0]),
+//        localBrushDateEnd   = (brush.empty()) ? DateFormat(dataXrange[1]) : DateFormat(b[1]);
+
+    var localBrushDateStart = DateFormat(dataXrange[0]),
+        localBrushDateEnd   = DateFormat(dataXrange[1]);
+
 
     // Update start and end dates in upper right-hand corner
     d3.select("#displayDates")
