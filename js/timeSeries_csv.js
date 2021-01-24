@@ -9,8 +9,8 @@ function drawTimeSeries(data) {
     formatValue = d3.format(",.0f");
 
     data.forEach(function(d) {
-    d.date = parseTime(d.date);
-    return d;
+        d.date = parseTime(d.date);
+        return d;
     })
 
     var svg = d3.select("#timeSeries"),
