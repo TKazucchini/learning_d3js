@@ -81,13 +81,51 @@ function drawTimeSeries(data) {
         .y(d => y(d.people));
 
 
+    let brush = d3.brushX()
+        .extent([[0, 0], [width, height2]])
+        .on('brush', brushed)
 
-    svg.append("g")
+    function brushed(event) {
+        var s = event.selection || x2.range()
+        x.domain(s.map(x2.invert, x2))
+        spotlight.select('.axis').call(xAxis)
+        spotlight.selectAll('.bar')
+            .attr('x', (d, i) => {
+                return x(i) - xBand.bandwidth()*0.9/2
+            })
+    }
+
+    x.domain([-1, data.length])
+    y.domain([0, d3.max(data, d => d.people)])
+    x2.domain(x.domain())
+    y2.domain([0, d3.max(data, d => d.people)])
+
+
+    // この辺からきちんと作る
+    splotlight.append('g')
+        .attr('clip-path','url(#my-clip-path)')
+        .selectAll('.bar')
+        .data(data)
+        .enter()
+        .append('rect')
+        .attr('class', 'bar')
+        .attr('x', (d, i) => {
+        return x(i) - xBand.bandwidth()*0.9/2
+        })
+        .attr('y', (d, i) => {
+        return y(d.people)
+        })
+        .attr('width', xBand.bandwidth()*0.9)
+        .attr('height', d => {
+        return height - y(d.people)
+        })
+
+    spotlight.append("g")
         .attr("class","x-axis")
         .attr("transform", "translate(0," + (height - margin.bottom) + ")")
         .call(d3.axisBottom(x).tickFormat(dynamicDateFormat));
 
-    svg.append("g")
+    spotlight.append("g")
         .attr("class", "y-axis")
         .attr("transform", "translate(" + margin.left + ",0)");
 
