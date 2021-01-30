@@ -47,7 +47,6 @@ data.sort(function(x, y){
    return d3.ascending(x.date, y.date);
 });
 
-console.log(data);
 
 let margin = {
       top: 50,
@@ -84,7 +83,7 @@ var dataYrange = [0, d3.max(data, function(d) { return d.count; })];
 var mindate = dataXrange[0],  // use the range of the data
     maxdate = dataXrange[1];
         
-console.log("mindate" + mindate);
+console.log("mindate: " + mindate);
 console.log("maxdate: " + maxdate);
 
 
@@ -92,7 +91,7 @@ console.log("maxdate: " + maxdate);
 let x = d3.scaleTime().range([0, width]).domain(dataXrange)
 let x2 = d3.scaleTime().range([0, width]).domain([mindate, maxdate])
 let y = d3.scaleLinear().range([height, 0]).domain(dataYrange)
-let y2 = d3.scaleLinear().range([height2, 0]).domain([dataYrange])
+let y2 = d3.scaleLinear().range([height2, 0]).domain(dataYrange)
 
 let xBand = d3.scaleBand().domain(d3.range(-1, data.length)).range([0, width])
 
@@ -119,10 +118,11 @@ var dynamicDateFormat = timeFormat([
     [function(){return "";}, function(d) { return d.getDate() != 1; }]
 ]);
 
+console.log(dataXrange);
 console.log(dynamicDateFormat(parseTime("2012-08")));
 
 
-let xAxis = d3.axisBottom(x).tickFormat(dynamicDateFormat)
+let xAxis = d3.axisBottom(x).tickFormat(d3.timeFormat("%Y"))//.tickFormat(dynamicDateFormat)
 let xAxis2 = d3.axisBottom(x2).tickFormat(dynamicDateFormat)
 let yAxis = d3.axisLeft(y)
 let yAxis2 = d3.axisLeft(y2)
