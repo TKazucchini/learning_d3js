@@ -102,7 +102,7 @@ function drawTimeSeries(data) {
 
 
     // この辺からきちんと作る
-    splotlight.append('g')
+    spotlight.append('g')
         .attr('clip-path','url(#my-clip-path)')
         .selectAll('.bar')
         .data(data)
