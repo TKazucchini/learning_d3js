@@ -4,9 +4,9 @@ d3.csv("./data/timeSeriesData.csv").then(d => drawTimeSeries(d))
 function drawTimeSeries(data) {
     
     var parseTime = d3.timeParse("%Y-%m-%d"),
-    formatDate = d3.timeFormat("%Y-%m-%d"),
-    bisectDate = d3.bisector(d => d.date).left,
-    formatValue = d3.format(",.0f");
+        formatDate = d3.timeFormat("%Y-%m-%d"),
+        bisectDate = d3.bisector(d => d.date).left,
+        formatValue = d3.format(",.0f");
 
     data.forEach(function(d) {
         d.date = parseTime(d.date);
@@ -14,15 +14,17 @@ function drawTimeSeries(data) {
     })
 
     var svg = d3.select("#timeSeries"),
-    margin = {top: 5, right: -30, bottom: 5, left: 60},
-    width = +document.getElementsByClassName('time-series')[0].clientWidth - margin.left - margin.right,
-    height = +document.getElementsByClassName('time-series')[0].clientHeight - margin.top - margin.bottom - 80,
-    height2 = 40,
-    radius = (Math.min(width, height) / 2) - 10,
-    node
+        margin = {top: 5, right: -30, bottom: 5, left: 60},
+        width = +document.getElementsByClassName('time-series')[0].clientWidth - margin.left - margin.right,
+        height = +document.getElementsByClassName('time-series')[0].clientHeight - margin.top - margin.bottom - 80,
+        height2 = 40,
+        radius = (Math.min(width, height) / 2) - 10,
+        node
 
-    var focus = svg.append('g')
-        .attr('class', 'focus')
+
+    // focus だとクラス名が被るので、Spotlight として設計 
+    var spotlight = svg.append('g')
+        .attr('class', 'spotlight')
         .attr('transform', `translate(${margin.left}, ${margin.top})`)
 
     var context = svg.append('g')
