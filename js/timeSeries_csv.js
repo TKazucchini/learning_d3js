@@ -75,6 +75,12 @@ function drawTimeSeries(data) {
       ]);
 
 
+    let xAxis = d3.axisBottom(x).tickFormat(dynamicDateFormat)
+    let xAxis2 = d3.axisBottom(x2).tickFormat(dynamicDateFormat)
+    let yAxis = d3.axisLeft(y)
+    let yAxis2 = d3.axisLeft(y2)
+
+
     var line = d3.line()
         //.curve(d3.curveCardinal)
         .x(d => x(d.date))
@@ -104,30 +110,59 @@ function drawTimeSeries(data) {
     // この辺からきちんと作る
     spotlight.append('g')
         .attr('clip-path','url(#my-clip-path)')
-        .selectAll('.bar')
-        .data(data)
-        .enter()
-        .append('rect')
-        .attr('class', 'bar')
         .attr('x', (d, i) => {
-        return x(i) - xBand.bandwidth()*0.9/2
+            return x(i) - xBand.bandwidth()*0.9/2
         })
         .attr('y', (d, i) => {
-        return y(d.people)
+            return y(d.people)
         })
         .attr('width', xBand.bandwidth()*0.9)
         .attr('height', d => {
-        return height - y(d.people)
+            return height - y(d.people)
         })
 
     spotlight.append("g")
         .attr("class","x-axis")
         .attr("transform", "translate(0," + (height - margin.bottom) + ")")
-        .call(d3.axisBottom(x).tickFormat(dynamicDateFormat));
+        .call(xAxis);
 
     spotlight.append("g")
         .attr("class", "y-axis")
-        .attr("transform", "translate(" + margin.left + ",0)");
+        .attr("transform", "translate(" + margin.left + ",0)")
+        .call(yAxis);
+
+    let defs = spotlight.append('defs')
+
+    // use clipPath
+    defs.append('clipPath')
+        .attr('id', 'my-clip-path')
+        .append('rect')
+        .attr('width', width)
+        .attr('height', height)
+
+    context.selectAll('.bar')
+        .data(data)
+        .enter()
+        .append('rect')
+        .attr('class', 'bar')
+        .attr('x', (d, i) => {
+        return x2(i) - xBand.bandwidth()*0.9/2
+        })
+        .attr('y', (d, i) => y2(d.people))
+        .attr('width', xBand.bandwidth()*0.9)
+        .attr('height', d => {
+        return height2 - y2(d.people)
+        })
+
+    context.append('g')
+        .attr('class', 'axis2')
+        .attr('transform', `translate(0,${height2})`)
+        .call(xAxis)
+
+    context.append('g')
+        .attr('class', 'brush')
+        .call(brush)
+        .call(brush.move, x.range())
 
     var focus = svg.append("g")
         .attr("class", "focus")
