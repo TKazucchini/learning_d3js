@@ -21,7 +21,7 @@
 //  ordinals.push('test' + i)
 //}
 
-var poeple  = [1, 3, 1, 2, 1, 1, 1, 1, 2, 2, 3, 1, 2, 1, 4, 3, 2, 1, 1, 1, 1, 1, 4, 2, 1, 2, 8, 2, 1, 4, 2, 4, 1, 3, 1, 2, 1, 1, 3, 1, 1, 5, 1, 1, 4];
+var poeple  = [1, 3, 1, 2, 1, 1, 1, 1, 2, 2, 3, 11, 2, 1, 4, 3, 2, 1, 1, 1, 1, 1, 4, 2, 1, 2, 8, 2, 1, 4, 2, 4, 1, 3, 1, 2, 1, 1, 3, 1, 1, 5, 1, 1, 4];
 var date = ["2018-06", "2013-04", "2015-11", "2012-10", "2014-09", "2014-02", "2016-02", "2016-04", "2016-06", "2014-12", "2013-07", "2017-01", "2015-10",
             "2012-12", "2013-05", "2018-04", "2015-06", "2017-03", "2014-08", "2017-07", "2013-02", "2012-07", "2016-03", "2017-06", "2018-07", "2014-10",
             "2013-01", "2013-10", "2017-11", "2014-05", "2012-11", "2015-01", "2018-03", "2015-12", "2015-08", "2016-08", "2014-11", "2014-01", "2013-06",
@@ -41,8 +41,6 @@ var parseTime = d3.timeParse("%Y-%m")
 data.forEach(function(d) {
     d.date = parseTime(d.date);
 });
-
-console.log(data);
 
 // sort dataset by month
 data.sort(function(x, y){
@@ -78,23 +76,23 @@ const context = svg.append('g')
 
 
 
-// 20210124作業メモ  何で xTicks でない？なぜかすべて 1970 になっているよ。
-
-
 // the date range of available data:
 var dataXrange = d3.extent(data, function(d) { return d.date; });
+var dataYrange = [0, d3.max(data, function(d) { return d.count; })];
 
 // maximum date range allowed to display
 var mindate = dataXrange[0],  // use the range of the data
     maxdate = dataXrange[1];
         
-                   
+console.log("mindate" + mindate);
+console.log("maxdate: " + maxdate);
+
 
 // the scale
 let x = d3.scaleTime().range([0, width]).domain(dataXrange)
 let x2 = d3.scaleTime().range([0, width]).domain([mindate, maxdate])
-let y = d3.scaleLinear().range([height, 0])
-let y2 = d3.scaleLinear().range([height2, 0])
+let y = d3.scaleLinear().range([height, 0]).domain(dataYrange)
+let y2 = d3.scaleLinear().range([height2, 0]).domain([dataYrange])
 
 let xBand = d3.scaleBand().domain(d3.range(-1, data.length)).range([0, width])
 
@@ -111,11 +109,17 @@ function timeFormat(formats) {
     return f[0](date);
   };
 };
+
+
+// 20210124作業メモ  何で xTicks でない？なぜかすべて 1970 になっているよ。
+
 var dynamicDateFormat = timeFormat([
     [d3.timeFormat("%Y"), function() { return true; }],// <-- how to display when Jan 1 YYYY
     [d3.timeFormat("%b %Y"), function(d) { return d.getMonth(); }],
     [function(){return "";}, function(d) { return d.getDate() != 1; }]
 ]);
+
+console.log(dynamicDateFormat(parseTime("2012-08")));
 
 
 let xAxis = d3.axisBottom(x).tickFormat(dynamicDateFormat)
