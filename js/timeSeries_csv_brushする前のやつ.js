@@ -14,23 +14,23 @@ function drawTimeSeries(data) {
     })
 
     var svg = d3.select("#timeSeries"),
-    margin = {top: 5, right: -30, bottom: 5, left: 60},
+    margin = {top: 5, right: 5, bottom: 5, left: 60},
     width = +document.getElementsByClassName('time-series')[0].clientWidth - margin.left - margin.right,
     height = +document.getElementsByClassName('time-series')[0].clientHeight - margin.top - margin.bottom;
 
     var x = d3.scaleTime()
-    .rangeRound([margin.left, width - margin.right])
-    .domain(d3.extent(data, d => d.date))
+        .rangeRound([margin.left, width - margin.right])
+        .domain(d3.extent(data, d => d.date))
 
     var y = d3.scaleLinear()
-    .rangeRound([height - margin.bottom, margin.top]);
+        .rangeRound([height - margin.bottom, margin.top]);
 
     var z = d3.scaleOrdinal(d3.schemeCategory10);
 
     var line = d3.line()
-    //.curve(d3.curveCardinal)
-    .x(d => x(d.date))
-    .y(d => y(d.people));
+        //.curve(d3.curveCardinal)
+        .x(d => x(d.date))
+        .y(d => y(d.people));
 
 
     let xAxis = d3.axisBottom(x).tickFormat(d3.timeFormat("%Y"))
@@ -49,7 +49,7 @@ function drawTimeSeries(data) {
 
     /****************************
     focus (メインで描画される領域について)
-    ************************** */
+    ****************************/
 
     var focus = svg.append("g")
         .attr("class", "focus")
