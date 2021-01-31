@@ -4,9 +4,9 @@ d3.csv("./data/timeSeriesData.csv").then(d => drawTimeSeries(d))
 function drawTimeSeries(data) {
     
     var parseTime = d3.timeParse("%Y-%m-%d"),
-        formatDate = d3.timeFormat("%Y-%m-%d"),
-        bisectDate = d3.bisector(d => d.date).left,
-        formatValue = d3.format(",.0f");
+    formatDate = d3.timeFormat("%Y-%m-%d"),
+    bisectDate = d3.bisector(d => d.date).left,
+    formatValue = d3.format(",.0f");
 
     data.forEach(function(d) {
         d.date = parseTime(d.date);
@@ -14,155 +14,42 @@ function drawTimeSeries(data) {
     })
 
     var svg = d3.select("#timeSeries"),
-        margin = {top: 5, right: -30, bottom: 5, left: 60},
-        width = +document.getElementsByClassName('time-series')[0].clientWidth - margin.left - margin.right,
-        height = +document.getElementsByClassName('time-series')[0].clientHeight - margin.top - margin.bottom - 80,
-        height2 = 40,
-        radius = (Math.min(width, height) / 2) - 10,
-        node
+    margin = {top: 5, right: -30, bottom: 5, left: 60},
+    width = +document.getElementsByClassName('time-series')[0].clientWidth - margin.left - margin.right,
+    height = +document.getElementsByClassName('time-series')[0].clientHeight - margin.top - margin.bottom;
 
-
-    // focus だとクラス名が被るので、Spotlight として設計 
-    var spotlight = svg.append('g')
-        .attr('class', 'spotlight')
-        .attr('transform', `translate(${margin.left}, ${margin.top})`)
-
-    var context = svg.append('g')
-            .attr('class', 'context')
-            .attr('transform', `translate(${margin.left}, ${margin.top + 550})`)
-
-
-    // the date range of available data:
-    var dataXrange = d3.extent(data, d => d.date);
-
-    // maximum date range allowed to display
-    var mindate = dataXrange[0],  // use the range of the data
-        maxdate = dataXrange[1];
-    
     var x = d3.scaleTime()
-            .rangeRound([margin.left, width - margin.right])
-            .domain(dataXrange)
-    var x2 = d3.scaleTime()
-            .rangeRound([margin.left, width - margin.right])
-            .domain([mindate, maxdate])
+    .rangeRound([margin.left, width - margin.right])
+    .domain(d3.extent(data, d => d.date))
+
     var y = d3.scaleLinear()
-            .rangeRound([height - margin.bottom, margin.top]);
-    var y2 = d3.scaleLinear()
-            .rangeRound([height2 - margin.bottom, margin.top]);
+    .rangeRound([height - margin.bottom, margin.top]);
+
     var z = d3.scaleOrdinal(d3.schemeCategory10);
 
-    let xBand = d3.scaleBand().domain(d3.range(-1, data.length)).range([0, width])
-
-
-    // === tick/date formatting functions ===
-    // from: https://stackoverflow.com/questions/20010864/d3-axis-labels-become-too-fine-grained-when-zoomed-in
-
-    function timeFormat(formats) {
-        return function(date) {
-          var i = formats.length - 1, f = formats[i];
-          while (!f[1](date)) f = formats[--i];
-          return f[0](date);
-        };
-      };
-      
-      
-      // 20210124作業メモ  何で xTicks でない？なぜかすべて 1970 になっているよ。
-      
-      var dynamicDateFormat = timeFormat([
-          [d3.timeFormat("%Y"), function() { return true; }],// <-- how to display when Jan 1 YYYY
-          [d3.timeFormat("%b %Y"), function(d) { return d.getMonth(); }],
-          [function(){return "";}, function(d) { return d.getDate() != 1; }]
-      ]);
-
-
-    let xAxis = d3.axisBottom(x).tickFormat(dynamicDateFormat)
-    let xAxis2 = d3.axisBottom(x2).tickFormat(dynamicDateFormat)
-    let yAxis = d3.axisLeft(y)
-    let yAxis2 = d3.axisLeft(y2)
-
-
     var line = d3.line()
-        //.curve(d3.curveCardinal)
-        .x(d => x(d.date))
-        .y(d => y(d.people));
+    //.curve(d3.curveCardinal)
+    .x(d => x(d.date))
+    .y(d => y(d.people));
 
 
-    let brush = d3.brushX()
-        .extent([[0, 0], [width, height2]])
-        .on('brush', brushed)
-
-    function brushed(event) {
-        var s = event.selection || x2.range()
-        x.domain(s.map(x2.invert, x2))
-        spotlight.select('.axis').call(xAxis)
-        spotlight.selectAll('.bar')
-            .attr('x', (d, i) => {
-                return x(i) - xBand.bandwidth()*0.9/2
-            })
-    }
-
-    x.domain([-1, data.length])
-    y.domain([0, d3.max(data, d => d.people)])
-    x2.domain(x.domain())
-    y2.domain([0, d3.max(data, d => d.people)])
+    let xAxis = d3.axisBottom(x).tickFormat(d3.timeFormat("%Y"))
+    let yAxis = d3.axisLeft(y).tickSize(-width + margin.right + margin.left)
 
 
-    // この辺からきちんと作る
-    spotlight.append('g')
-        .attr('clip-path','url(#my-clip-path)')
-        .attr('x', (d, i) => {
-            return x(i) - xBand.bandwidth()*0.9/2
-        })
-        .attr('y', (d, i) => {
-            return y(d.people)
-        })
-        .attr('width', xBand.bandwidth()*0.9)
-        .attr('height', d => {
-            return height - y(d.people)
-        })
-
-    spotlight.append("g")
+    svg.append("g")
         .attr("class","x-axis")
         .attr("transform", "translate(0," + (height - margin.bottom) + ")")
         .call(xAxis);
 
-    spotlight.append("g")
+    svg.append("g")
         .attr("class", "y-axis")
-        .attr("transform", "translate(" + margin.left + ",0)")
-        .call(yAxis);
+        .attr("transform", "translate(" + margin.left + ",0)");
 
-    let defs = spotlight.append('defs')
 
-    // use clipPath
-    defs.append('clipPath')
-        .attr('id', 'my-clip-path')
-        .append('rect')
-        .attr('width', width)
-        .attr('height', height)
-
-    context.selectAll('.bar')
-        .data(data)
-        .enter()
-        .append('rect')
-        .attr('class', 'bar')
-        .attr('x', (d, i) => {
-        return x2(i) - xBand.bandwidth()*0.9/2
-        })
-        .attr('y', (d, i) => y2(d.people))
-        .attr('width', xBand.bandwidth()*0.9)
-        .attr('height', d => {
-        return height2 - y2(d.people)
-        })
-
-    context.append('g')
-        .attr('class', 'axis2')
-        .attr('transform', `translate(0,${height2})`)
-        .call(xAxis)
-
-    context.append('g')
-        .attr('class', 'brush')
-        .call(brush)
-        .call(brush.move, x.range())
+    /****************************
+    focus (メインで描画される領域について)
+    ************************** */
 
     var focus = svg.append("g")
         .attr("class", "focus")
@@ -180,6 +67,7 @@ function drawTimeSeries(data) {
         .attr("text-anchor", "middle")
         .attr("font-size", 12);
 
+    // overlay クラスの svg タグを作成する
     var overlay = svg.append("rect")
         .attr("class", "overlay")
         .attr("x", margin.left)
@@ -187,40 +75,43 @@ function drawTimeSeries(data) {
         .attr("height", height)
 
 
+    // CSV で読み込んでいるデータから最初の列を除く
     var keys = data.columns.slice(1);
     update(keys, 10);
 
+    // update 関数で categories クラス（未だ実在しない）に描画していく
     function update(input, speed) {
 
-    var categories = input.map(function(id) {
-        return {
-            id: id,
-            values: data.map(d => {return {date: d.date, people: +d[id]}})
-        };
-    });
+        // input に入っているデータを SVG の line で定義した値にマッピングさせる
+        var categories = input.map(function(id) {
+            return {
+                id: id,
+                values: data.map(d => {return {date: d.date, people: +d[id]}})
+            };
+        });
 
-    y.domain([
-        d3.min(categories, d => d3.min(d.values, c => c.people)),
-        d3.max(categories, d => d3.max(d.values, c => c.people))
-    ]).nice();
+        y.domain([
+            d3.min(categories, d => d3.min(d.values, c => c.people)),
+            d3.max(categories, d => d3.max(d.values, c => c.people))
+        ]).nice();
 
-    svg.selectAll(".y-axis").transition()
-        .duration(speed)
-        .call(d3.axisLeft(y).tickSize(-width + margin.right + margin.left))
+        svg.selectAll(".y-axis").transition()
+            .duration(speed)
+            .call(yAxis)
 
-    var category = svg.selectAll(".categories")
-        .data(categories);
+        var category = svg.selectAll(".categories")
+            .data(categories);
 
-    category.exit().remove();
+        category.exit().remove();
 
-    category.enter().insert("g", ".focus").append("path")
-        .attr("class", "line categories")
-        .style("stroke", d => z(d.id))
-        .merge(category)
-    .transition().duration(speed)
-        .attr("d", d => line(d.values))
+        category.enter().insert("g", ".focus").append("path")
+            .attr("class", "line categories")
+            .style("stroke", d => z(d.id))
+            .merge(category)
+        .transition().duration(speed)
+            .attr("d", d => line(d.values))
 
-    tooltip(keys);
+        tooltip(keys);
     }
 
     function tooltip(keys) {
@@ -245,11 +136,13 @@ function drawTimeSeries(data) {
             .attr("r", 2.5)
             .merge(circles);
 
+        // 先に作成した overlay クラスに以下を描画する
         svg.selectAll(".overlay")
             .on("mouseover", function() { focus.style("display", null); })
             .on("mouseout", function() { focus.style("display", "none"); })
             .on("mousemove", mousemove);
 
+        // overlay クラスで利用する mouseover 時に実行される関数
         function mousemove(event) {  // changed v6 event
 
             var x0 = x.invert(d3.pointer(event)[0]),  // changed v6 pointer
