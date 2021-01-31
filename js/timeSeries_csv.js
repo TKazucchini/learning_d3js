@@ -13,17 +13,47 @@ function drawTimeSeries(data) {
         return d;
     })
 
-    var svg = d3.select("#timeSeries"),
-    margin = {top: 5, right: -5, bottom: 5, left: 60},
-    width = +document.getElementsByClassName('time-series')[0].clientWidth - margin.left - margin.right,
-    height = +document.getElementsByClassName('time-series')[0].clientHeight - margin.top - margin.bottom;
+    var margin = {top: 5, right: -5, bottom: 5, left: 60},
+        width = +document.getElementsByClassName('time-series')[0].clientWidth - margin.left - margin.right,
+        height = +document.getElementsByClassName('time-series')[0].clientHeight - margin.top - margin.bottom,
+        height2 = 40;
 
-    var x = d3.scaleTime()
+    const svg = d3.select('#timeSeries')
+
+    const spotlight = svg.append('g')
+        .attr('class', 'spotlight')
+        .attr('transform', `translate(${margin.left}, ${margin.top})`)
+
+    const context = svg.append('g')
+                    .attr('class', 'context')
+                    .attr('transform', `translate(${margin.left}, ${margin.top + 550})`)
+
+    // the date range of available data:
+    var dataXrange = d3.extent(data, d => d.date);
+    var dataYrange = [0, d3.max(data, d => d.people)]; // d.people? マッピングさせてから
+
+    // maximum date range allowed to display
+    var mindate = dataXrange[0],  // use the range of the data
+        maxdate = dataXrange[1];
+            
+    console.log("mindate: " + mindate);
+    console.log("maxdate: " + maxdate);
+
+    let x = d3.scaleTime()
         .rangeRound([margin.left, width - margin.right])
-        .domain(d3.extent(data, d => d.date))
+        .domain(dataXrange)
 
-    var y = d3.scaleLinear()
-        .rangeRound([height - margin.bottom, margin.top]);
+    let x2 = d3.scaleTime()
+        .rangeRound([margin.left, width - margin.right])
+        .domain([mindate, maxdate])
+
+    let y = d3.scaleLinear()
+        .rangeRound([height - margin.bottom, margin.top])
+        .domain(dataYrange);
+
+    let y2 = d3.scaleLinear()
+        .rangeRound([height2 - margin.bottom, margin.top])
+        .domain(dataYrange);
 
     var z = d3.scaleOrdinal(d3.schemeCategory10);
 
@@ -33,25 +63,55 @@ function drawTimeSeries(data) {
         .y(d => y(d.people));
 
 
-    let xAxis = d3.axisBottom(x).tickFormat(d3.timeFormat("%Y"))
-    let yAxis = d3.axisLeft(y).tickSize(-width + margin.right + margin.left)
+    // === tick/date formatting functions ===
+    // from: https://stackoverflow.com/questions/20010864/d3-axis-labels-become-too-fine-grained-when-zoomed-in
 
+    function timeFormat(formats) {
+        return function(date) {
+            var i = formats.length - 1, f = formats[i];
+            while (!f[1](date)) f = formats[--i];
+            return f[0](date);
+        };
+    };
 
-    svg.append("g")
-        .attr("class","x-axis")
-        .attr("transform", "translate(0," + (height - margin.bottom) + ")")
-        .call(xAxis);
+    // 20210124作業メモ  何で xTicks でない？なぜかすべて 1970 になっているよ。
 
-    svg.append("g")
-        .attr("class", "y-axis")
-        .attr("transform", "translate(" + margin.left + ",0)");
+    var dynamicDateFormat = timeFormat([
+        [d3.timeFormat("%Y"), function() { return true; }],// <-- how to display when Jan 1 YYYY
+        [d3.timeFormat("%b %Y"), function(d) { return d.getMonth(); }],
+        [function(){return "";}, function(d) { return d.getDate() != 1; }]
+    ]);
+
+    let xAxis = d3.axisBottom(x).tickFormat(dynamicDateFormat);
+    let xAxis2 = d3.axisBottom(x2).tickFormat(dynamicDateFormat);
+    let yAxis = d3.axisLeft(y).tickSize(-width + margin.right + margin.left);
+    let yAxis2 = d3.axisLeft(y2);
+
+    let brush = d3.brushX()
+        .extent([[0, 0], [width, height2]])
+        .on('brush', brushed)
+
+    function brushed(event) {
+        var s = event.selection || x2.range()
+        x.domain(s.map(x2.invert, x2))
+        spotlight.select('.axis').call(xAxis)
+        spotlight.selectAll('.bar')
+            .attr('x', (d, i) => {
+                return x(i) - xBand.bandwidth()*0.9/2
+            })
+        }
+
+    x.domain([-1, data.length])
+    y.domain([0, d3.max(data, d => d.people)])
+    x2.domain(x.domain())
+    y2.domain([0, d3.max(data, d => d.people)])
 
 
     /****************************
     focus (メインで描画される領域について)
     ****************************/
 
-    var focus = svg.append("g")
+    var focus = spotlight.append("g")
         .attr("class", "focus")
         .style("display", "none");
 
@@ -95,23 +155,71 @@ function drawTimeSeries(data) {
             d3.max(categories, d => d3.max(d.values, c => c.people))
         ]).nice();
 
-        svg.selectAll(".y-axis").transition()
+        spotlight.selectAll(".y-axis").transition()
             .duration(speed)
             .call(yAxis)
 
-        var category = svg.selectAll(".categories")
+        var category_sl = spotlight.append('g')
+            .attr('clip-path','url(#my-clip-path)')
+            .selectAll(".categories")
             .data(categories);
 
-        category.exit().remove();
+        category_sl.exit().remove();
 
-        category.enter().insert("g", ".focus").append("path")
+        category_sl.enter().insert("g", ".spotlight")
+            .append("path")
             .attr("class", "line categories")
             .style("stroke", d => z(d.id))
-            .merge(category)
+            .merge(category_sl)
         .transition().duration(speed)
             .attr("d", d => line(d.values))
 
+        spotlight.append("g")
+            .attr("class","x-axis")
+            .attr("transform", "translate(0," + (height - margin.bottom) + ")")
+            .call(xAxis);
+
+        spotlight.append("g")
+            .attr("class", "y-axis")
+            .attr("transform", "translate(" + margin.left + ",0)");
+
         tooltip(keys);
+
+
+
+        let defs = spotlight.append('defs')
+
+        // use clipPath
+        defs.append('clipPath')
+            .attr('id', 'my-clip-path')
+            .append('path')
+            .attr('width', width)
+            .attr('height', height)
+
+        var category_cx = context.selectAll(".categories")
+            .data(categories);
+
+        category_cx.exit().remove();
+
+        category_cx.enter().insert("g", ".context")
+            .append("path")
+            .attr("class", "line categories")
+            .style("stroke", d => z(d.id))
+            .merge(category_cx)
+        .transition().duration(speed)
+            .attr("d", d => line(d.values))
+            // このあたりでheight2の高さコントロール必要かも。後でチェック。
+
+        context.append('g')
+            .attr('class', 'axis2')
+            .attr('transform', `translate(0,${height2})`)
+            .call(xAxis)
+
+        context.append('g')
+            .attr('class', 'brush')
+            .call(brush)
+            .call(brush.move, x.range())
+
     }
 
     function tooltip(keys) {
