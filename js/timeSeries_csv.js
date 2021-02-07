@@ -209,6 +209,7 @@ function drawTimeSeries(data) {
         .transition().duration(speed)
             .attr("d", d => line(d.values))
             // このあたりでheight2の高さコントロール必要かも。後でチェック。
+            // ファイル切り出して、CSV 既読にした方がデバックしやすい。次回。
 
         context.append('g')
             .attr('class', 'axis2')
