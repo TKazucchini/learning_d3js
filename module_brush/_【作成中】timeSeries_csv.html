@@ -50,16 +50,26 @@ for(var i=0; i<date.length; i++){
     data.push(obj);
 }
 
-
 var parseTime = d3.timeParse("%Y-%m-%d"),
-formatDate = d3.timeFormat("%Y-%m-%d"),
-bisectDate = d3.bisector(d => d.date).left,
-formatValue = d3.format(",.0f");
+    formatDate = d3.timeFormat("%Y-%m-%d"),
+    bisectDate = d3.bisector(d => d.date).left,
+    formatValue = d3.format(",.0f");
 
 data.forEach(function(d) {
     d.date = parseTime(d.date);
     return d;
 })
+
+// CSV で読み込んでいるデータから最初の列を除く
+var keys = ['in_jp', 'in_fr', 'in_tr', 'em_jp', 'em_fr', 'em_tr'];
+
+// input に入っているデータを SVG の line で定義した値にマッピングさせる
+var categories = keys.map(function(id) {
+    return {
+        id: id,
+        values: data.map(d => {return {date: d.date, people: +d[id]}})
+    };
+});
 
 var margin = {top: 5, right: -5, bottom: 5, left: 60},
     width = +document.getElementsByClassName('time-series')[0].clientWidth - margin.left - margin.right,
@@ -75,6 +85,7 @@ const spotlight = svg.append('g')
 const context = svg.append('g')
                 .attr('class', 'context')
                 .attr('transform', `translate(${margin.left}, ${margin.top + 550})`)
+
 
 // the date range of available data:
 var dataXrange = d3.extent(data, d => d.date);
@@ -183,20 +194,11 @@ var overlay = svg.append("rect")
     .attr("height", height)
 
 
-// CSV で読み込んでいるデータから最初の列を除く
-var keys = ['in_jp', 'in_fr', 'in_tr', 'em_jp', 'em_fr', 'em_tr'];
+
 update(keys, 10);
 
 // update 関数で categories クラス（未だ実在しない）に描画していく
 function update(input, speed) {
-
-    // input に入っているデータを SVG の line で定義した値にマッピングさせる
-    var categories = input.map(function(id) {
-        return {
-            id: id,
-            values: data.map(d => {return {date: d.date, people: +d[id]}})
-        };
-    });
 
     y.domain([
         d3.min(categories, d => d3.min(d.values, c => c.people)),
@@ -305,8 +307,13 @@ function tooltip(keys) {
         var x0 = x.invert(d3.pointer(event)[0]),  // changed v6 pointer
             i = bisectDate(data, x0, 1),
             d0 = data[i - 1],
-            d1 = data[i],
-            d = x0 - d0.date > d1.date - x0 ? d1 : d0;
+            d1 = data[i];
+            //d = x0 - d0.date > d1.date - x0 ? d1 : d0;
+
+        console.log(x0); // なんでここで date が null やねん！日付が全部 1970 になってるのもコレ。直せ！
+        console.log(i);
+        console.log(d0);
+        console.log(d1);
 
         focus.select(".lineHover")
             .attr("transform", "translate(" + x(d.date) + "," + height + ")");
