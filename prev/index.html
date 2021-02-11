@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset = "utf-8">
+        <title>Line</title>
+        <script src = "https://d3js.org/d3.v6.min.js" charset = "utf-8"></script>
+        <style>
+            svg{width: 520px; height: 450px; border: 1px solid black;}
+            .axis text {
+                font-family: sans-serif;
+            }
+            .axis path,
+            .axis line {
+                fill: none; stroke: black;
+            }
+            .axis_x line {
+                fill: none; stroke: black;
+            }
+            .itemA {fill: none; stroke: red;}
+            .itemB {fill: none; stroke: green;}
+            .itemC {fill: none; stroke: blue;}
+        </style>
+    </head>
+    <body>
+        <h1>Line</h1>
+        <svg id = "myGraph"></svg>
+        <div>
+            <button id = "prev">前へ</button>
+            <button id = "next">次へ</button>
+        </div>
+        <script src = "js/20201221_1.js"></script>
+    </body>
+</html>
