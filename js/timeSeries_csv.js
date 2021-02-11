@@ -3,7 +3,7 @@ d3.csv("./data/timeSeriesData.csv").then(d => drawTimeSeries(d))
     
 function drawTimeSeries(data) {
     
-    var parseTime = d3.timeParse("%Y-%m-%d"),
+    var parseTime = d3.timeParse("%Y-%m"),
     formatDate = d3.timeFormat("%Y-%m-%d"),
     bisectDate = d3.bisector(d => d.date).left,
     formatValue = d3.format(",.0f");
