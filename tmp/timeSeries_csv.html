@@ -289,9 +289,9 @@ function update(input, speed) {
         .merge(category_cx)
     .transition().duration(speed)
         .attr("d", d => line(d.values))
+        //.attr('transform', `translate(0,${height2})`)
         // このあたりでheight2の高さコントロール必要かも。後でチェック。
         // ファイル切り出して、CSV 既読にした方がデバックしやすい。次回。
-
 
     context.append('g')
         .attr('class', 'axis2')
@@ -329,8 +329,8 @@ function tooltip(keys) {
 
     // 先に作成した overlay クラスに以下を描画する
     svg.selectAll(".overlay")
-        .on("mouseover", function() { spotlight.style("display", null); })
-        .on("mouseout", function() { spotlight.style("display", "none"); })
+        .on("mouseover", function() { focus.style("display", null); })
+        .on("mouseout", function() { focus.style("display", "none"); })
         .on("mousemove", mousemove);
 
     // overlay クラスで利用する mouseover 時に実行される関数
