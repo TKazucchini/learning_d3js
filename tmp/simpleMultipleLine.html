@@ -20,7 +20,7 @@
 
         .time-series {
             width: 100%;
-            height: 50%;
+            height: 100%;
             box-sizing: border-box;
             border: solid 1px black;
         }
@@ -112,10 +112,8 @@ for(var i = 0; i < date.length; i++){
 
 
 // データ型パース関数定義
-var parseTime = d3.timeParse("%Y-%m"),
-    formatDate = d3.timeFormat("%Y-%m"),
-    bisectDate = d3.bisector(d => d.date).left,
-    formatValue = d3.format(",.0f");
+var parseTime = d3.timeParse("%Y-%m");
+var formatDate = d3.timeFormat("%Y-%m");
 
 // 日付型の定義
 data.forEach(function(d) {
@@ -129,10 +127,9 @@ data.sort(function(x, y){
 });
 
 // 区画整理
-var margin = {top: 5, right: -5, bottom: 30, left: 60},
+var margin = {top: 5, right: 5, bottom: 30, left: 30},
     width = +document.getElementsByClassName('time-series')[0].clientWidth - margin.left - margin.right,
-    height = +document.getElementsByClassName('time-series')[0].clientHeight - margin.top - margin.bottom - 40,
-    height2 = 40;
+    height = +document.getElementsByClassName('time-series')[0].clientHeight - margin.top - margin.bottom;
 
 const svg = d3.select('#timeSeries')
 
@@ -140,9 +137,6 @@ const spotlight = svg.append('g')
                     .attr('class', 'spotlight')
                     .attr('transform', `translate(${margin.left}, ${margin.top})`)
 
-const context = svg.append('g')
-                    .attr('class', 'context')
-                    .attr('transform', `translate(${margin.left}, ${margin.top + height})`)
 
 var z = d3.scaleOrdinal(d3.schemeCategory10);
 
@@ -180,13 +174,6 @@ let y = d3.scaleLinear()
     .rangeRound([height - margin.bottom, margin.top])
     .domain(dataYrange);
 
-let x2 = d3.scaleTime()
-    .rangeRound([margin.left, width - margin.right])
-    .domain([mindate, maxdate])
-
-let y2 = d3.scaleLinear()
-    .rangeRound([height2 - margin.bottom, margin.top])
-    .domain(dataYrange);
 
 
 // === tick/date formatting functions ===
@@ -207,205 +194,42 @@ var dynamicDateFormat = timeFormat([
 ]);
 
 let xAxis = d3.axisBottom(x).tickFormat(dynamicDateFormat);
-let xAxis2 = d3.axisBottom(x2).tickFormat(dynamicDateFormat);
 let yAxis = d3.axisLeft(y).tickSize(-width + margin.right + margin.left);
-let yAxis2 = d3.axisLeft(y2);
 
-let brush = d3.brushX()
-    .extent([[0, 0], [width, height2]])
-    .on('brush', brushed)
-
-function brushed(event) {
-    var s = event.selection || x2.range()
-    x.domain(s.map(x2.invert, x2))
-    spotlight.select('.axis').call(xAxis)
-    spotlight.selectAll('.bar')                     // 何で .bar? .line じゃダメなの？
-        .attr('x', (d, i) => {
-            return x(i) - xBand.bandwidth()*0.9/2   // 20210211 上のやつを '.line' にすると、エラー xBand is not defined.
-        })
-    }
 
 
 /****************************
 focus (メインで描画される領域について)
 ****************************/
-/*
-var focus = spotlight.append("g")
-    .attr("class", "focus")
-    .style("display", "none");
-*/
-spotlight.append("line").attr("class", "lineHover")
-    .style("stroke", "#999")
-    .attr("stroke-width", 1)
-    .style("shape-rendering", "crispEdges")
-    .style("opacity", 0.5)
-    .attr("y1", -height)
-    .attr("y2",0);
-
-spotlight.append("text").attr("class", "lineHoverDate")
-    .attr("text-anchor", "middle")
-    .attr("font-size", 12);
-
-// overlay クラスの svg タグを作成する
-var overlay = svg.append("rect")
-    .attr("class", "overlay")
-    .attr("x", margin.left)
-    .attr("width", width - margin.right - margin.left)
-    .attr("height", height)
 
 
+y.domain([
+    d3.min(categories, d => d3.min(d.values, c => c.people)),
+    d3.max(categories, d => d3.max(d.values, c => c.people))
+]).nice();
 
-update(keys, 10);
+spotlight.selectAll(".y-axis").transition()
+    .call(yAxis)
 
-// update 関数で categories クラス（未だ実在しない）に描画していく
-function update(input, speed) {
-
-    y.domain([
-        d3.min(categories, d => d3.min(d.values, c => c.people)),
-        d3.max(categories, d => d3.max(d.values, c => c.people))
-    ]).nice();
-
-    spotlight.selectAll(".y-axis").transition()
-        .duration(speed)
-        .call(yAxis)
-
-    spotlight.append("path")
-        .datum(categories);
-
-    var category_sl = spotlight.append('g')
-        .attr('clip-path','url(#my-clip-path)')
-        .selectAll(".categories")
-        .data(categories);
-
-    category_sl.exit().remove();
-
-    category_sl.enter().insert("g", ".spotlight")
-        .append("path")
-        .attr("class", "line categories")
-        .style("stroke", d => z(d.id))
-        .merge(category_sl)
-    .transition().duration(speed)
-        .attr("d", d => line(d.values))
-
-    spotlight.append("g")
-        .attr("class","x-axis")
-        .attr("transform", "translate(0," + (height - margin.bottom) + ")")
-        .call(xAxis);
-
-    spotlight.append("g")
-        .attr("class", "y-axis")
-        .attr("transform", "translate(" + margin.left + ",0)");
-
-    tooltip(keys);
+spotlight.append("path")
+    .datum(categories);
 
 
+spotlight.enter().insert("g", ".spotlight")
+    .append("path")
+    .attr("class", "line categories")
+    .style("stroke", d => z(d.id))
+    .merge(spotlight)
+    .attr("d", d => line(d.values))
 
-    let defs = spotlight.append('defs')
+spotlight.append("g")
+    .attr("class","x-axis")
+    .attr("transform", "translate(0," + (height - margin.bottom) + ")")
+    .call(xAxis);
 
-    // use clipPath
-    defs.append('clipPath')
-        .attr('id', 'my-clip-path')
-        .append('path')
-        .attr('width', width)
-        .attr('height', height)
-
-    var category_cx = context.selectAll(".categories")
-        .data(categories);
-
-
-    category_cx.exit().remove();
-
-    category_cx.enter().insert("g", ".context")
-        .append("path")
-        .attr("class", "line categories")
-        .style("stroke", d => z(d.id))
-        .merge(category_cx)
-    .transition().duration(speed)
-        .attr("d", d => line(d.values))
-        //.attr('transform', `translate(0,${height2})`)
-        // このあたりでheight2の高さコントロール必要かも。後でチェック。
-        // ファイル切り出して、CSV 既読にした方がデバックしやすい。次回。
-
-    context.append('g')
-        .attr('class', 'axis2')
-        .attr('transform', `translate(0,${height2})`)
-        .call(xAxis)
-
-    context.append('g')
-        .attr('class', 'brush')
-        .call(brush)
-        .call(brush.move, x.range())
-
-}
-
-function tooltip(keys) {
-
-    var labels = spotlight.selectAll(".lineHoverText")
-        .data(keys)
-
-    labels.enter().append("text")
-        .attr("class", "lineHoverText")
-        .style("fill", d => z(d))
-        .attr("text-anchor", "start")
-        .attr("font-size",12)
-        .attr("dy", (_, i) => 1 + i * 2 + "em")
-        .merge(labels);
-
-    var circles = spotlight.selectAll(".hoverCircle")
-        .data(keys)
-
-    circles.enter().append("circle")
-        .attr("class", "hoverCircle")
-        .style("fill", d => z(d))
-        .attr("r", 2.5)
-        .merge(circles);
-
-    // 先に作成した overlay クラスに以下を描画する
-    svg.selectAll(".overlay")
-        .on("mouseover", function() { focus.style("display", null); })
-        .on("mouseout", function() { focus.style("display", "none"); })
-        .on("mousemove", mousemove);
-
-    // overlay クラスで利用する mouseover 時に実行される関数
-    function mousemove(event) {  // changed v6 event
-
-        var x0 = x.invert(d3.pointer(event)[0]),  // changed v6 pointer
-            i = bisectDate(data, x0, 1),
-            d0 = data[i - 1],
-            d1 = data[i];
-            d = x0 - d0.date > d1.date - x0 ? d1 : d0;
-
-        console.log("x0: " + x0);
-        console.log("bisectDate(data.date, x0, 1): " + i);
-        console.log("data[i - 1]: " + d0);
-        console.log("data[i]: " + d1);
-        console.log("x0 - d0.date > d1.date - x0 ? d1 : d0: " + d);
-
-        spotlight.select(".lineHover")
-            .attr("transform", "translate(" + x(d.date) + "," + height + ")");
-
-        spotlight.select(".lineHoverDate")
-            .attr("transform", 
-                "translate(" + x(d.date) + "," + (height + margin.bottom) + ")")
-            .text(formatDate(d.date));
-
-        spotlight.selectAll(".hoverCircle")
-            .attr("cy", e => y(d[e]))
-            .attr("cx", x(d.date));
-
-        spotlight.selectAll(".lineHoverText")
-            .attr("transform", "translate(" + (x(d.date)) + "," + height / 2.5 + ")")
-            .text(e => e + " " + formatValue(d[e]) + " 人");
-
-        x(d.date) > (width - width / 4) 
-            ? spotlight.selectAll("text.lineHoverText")
-                .attr("text-anchor", "end")
-                .attr("dx", -10)
-            : spotlight.selectAll("text.lineHoverText")
-                .attr("text-anchor", "start")
-                .attr("dx", 10)
-    }
-}
+spotlight.append("g")
+    .attr("class", "y-axis")
+    .attr("transform", "translate(" + margin.left + ",0)");
 
 
 
