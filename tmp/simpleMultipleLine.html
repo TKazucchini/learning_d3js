@@ -28,10 +28,6 @@
         /*********************************
         timeSeries 要素のスタイル
         *********************************/
-        svg {
-            width: 100%;
-            height: 100%;
-        }
 
         /* time-series のスタイル */
 
@@ -75,15 +71,15 @@
         <p>出典：XXXXXXXXXXXXXX</p>
     </div>
     <div class = "time-series">
-        <!-- <p>Time Series Grpah</p> -->
-        <svg id = "timeSeries"></svg>
         <!-- script src = "js/timeSeries_csv.js"></script-->
     </div>
 
 <script>
 
+/****************************
+データの整形
+****************************/
 
-//表示するデータ
 var date = ["2018-06", "2013-04", "2015-11", "2012-10", "2014-09", "2014-02", "2016-02", "2016-04", "2016-06", "2014-12", "2013-07", "2017-01", "2015-10",
             "2012-12", "2013-05", "2018-04", "2015-06", "2017-03", "2014-08", "2017-07", "2013-02", "2012-07", "2016-03", "2017-06", "2018-07", "2014-10",
             "2013-01", "2013-10", "2017-11", "2014-05", "2012-11", "2015-01", "2018-03", "2015-12", "2015-08", "2016-08", "2014-11", "2014-01", "2013-06",
@@ -126,26 +122,6 @@ data.sort(function(x, y){
    return d3.ascending(x.date, y.date);
 });
 
-// 区画整理
-var margin = {top: 5, right: 5, bottom: 30, left: 30},
-    width = +document.getElementsByClassName('time-series')[0].clientWidth - margin.left - margin.right,
-    height = +document.getElementsByClassName('time-series')[0].clientHeight - margin.top - margin.bottom;
-
-const svg = d3.select('#timeSeries')
-
-const spotlight = svg.append('g')
-                    .attr('class', 'spotlight')
-                    .attr('transform', `translate(${margin.left}, ${margin.top})`)
-
-
-var z = d3.scaleOrdinal(d3.schemeCategory10);
-
-var line = d3.line()
-    //.curve(d3.curveCardinal)
-    .x(d => x(d.date))
-    .y(d => y(d.people));
-
-
 // CSV で読み込んでいるデータから最初の列を除く
 var keys = ['in_jp', 'in_fr', 'in_tr', 'em_jp', 'em_fr', 'em_tr'];
 
@@ -157,79 +133,74 @@ var categories = keys.map(function(id) {
     };
 });
 
-// the date range of available data:
-var dataXrange = d3.extent(data, d => d.date);
-var dataYrange = [0, d3.max(categories, d => d3.max(d.values, c => c.people))]; // d.people? マッピングさせてから
+
+console.log(categories);
 
 
-// maximum date range allowed to display
-var mindate = dataXrange[0],  // use the range of the data
-    maxdate = dataXrange[1];
+/****************************
+描画用の svg コンテナの定義
+****************************/
 
-let x = d3.scaleTime()
-    .rangeRound([margin.left, width - margin.right])
-    .domain(dataXrange)
+// 区画整理
+var margin = {top: 5, right: 5, bottom: 30, left: 30},
+    width = +document.getElementsByClassName('time-series')[0].clientWidth - margin.left - margin.right,
+    height = +document.getElementsByClassName('time-series')[0].clientHeight - margin.top - margin.bottom;
 
-let y = d3.scaleLinear()
-    .rangeRound([height - margin.bottom, margin.top])
-    .domain(dataYrange);
-
-
-
-// === tick/date formatting functions ===
-// from: https://stackoverflow.com/questions/20010864/d3-axis-labels-become-too-fine-grained-when-zoomed-in
-
-function timeFormat(formats) {
-    return function(date) {
-        var i = formats.length - 1, f = formats[i];
-        while (!f[1](date)) f = formats[--i];
-        return f[0](date);
-    };
-};
-
-var dynamicDateFormat = timeFormat([
-    [d3.timeFormat("%Y"), function() { return true; }],// <-- how to display when Jan 1 YYYY
-    [d3.timeFormat("%b %Y"), function(d) { return d.getMonth(); }],
-    [function(){return "";}, function(d) { return d.getDate() != 1; }]
-]);
-
-let xAxis = d3.axisBottom(x).tickFormat(dynamicDateFormat);
-let yAxis = d3.axisLeft(y).tickSize(-width + margin.right + margin.left);
+const svg = d3.select(".time-series")
+                .append("svg")
+                .attr("width", width + margin.left + margin.right)
+                .attr("height", height + margin.top + margin.bottom)
+                .append("g")
+                .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
 
 
 /****************************
-focus (メインで描画される領域について)
+描画関数の定義
 ****************************/
 
+var z = d3.scaleOrdinal(d3.schemeCategory10);
 
-y.domain([
-    d3.min(categories, d => d3.min(d.values, c => c.people)),
-    d3.max(categories, d => d3.max(d.values, c => c.people))
-]).nice();
+var xScale = d3.scaleTime()
+    .rangeRound([margin.left, width - margin.right])
+    .domain(d3.extent(data, d => d.date))
 
-spotlight.selectAll(".y-axis").transition()
-    .call(yAxis)
+let yScale = d3.scaleLinear()
+    .rangeRound([height - margin.bottom, margin.top])
+    .domain([0, d3.max(categories, d => d3.max(d.values, c => c.people))]);
 
-spotlight.append("path")
-    .datum(categories);
+var line = d3.line()
+    //.curve(d3.curveCardinal)
+    .x(d => xScale(d.date))
+    .y(d => yScale(d.people));
 
 
-spotlight.enter().insert("g", ".spotlight")
+/****************************
+描画の実行
+****************************/
+
+svg.append("g")
+    .attr("class", "y-axis")
+    .call(d3.axisLeft(yScale))
+    .append("text")
+    .text("The number of travelar")
+    .attr("stroke", "#000")
+    .attr("x", -margin.left)
+    .attr("y", 0);
+
+svg.append("g")
+    .attr("class","x-axis")
+    .call(d3.axisBottom(xScale))
+    .attr("transform", "translate(0," + (height - margin.bottom) + ")");
+
+svg.enter().insert("g", ".svg")
     .append("path")
+    .data(data)
     .attr("class", "line categories")
     .style("stroke", d => z(d.id))
-    .merge(spotlight)
-    .attr("d", d => line(d.values))
+    .merge(svg)
+    .attr("d", d => line(d.values))    /// 複数系列の表示どうするの？？
 
-spotlight.append("g")
-    .attr("class","x-axis")
-    .attr("transform", "translate(0," + (height - margin.bottom) + ")")
-    .call(xAxis);
-
-spotlight.append("g")
-    .attr("class", "y-axis")
-    .attr("transform", "translate(" + margin.left + ",0)");
 
 
 
