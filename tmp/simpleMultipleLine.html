@@ -36,7 +36,7 @@
         }
 
         .y-axis path {
-            display:none;
+            opacity: 2;
         }
         .line {
             fill: none;
@@ -76,8 +76,10 @@
 
 <script>
 
+
+
 /****************************
-データの整形
+1. データの整形
 ****************************/
 
 var date = ["2018-06", "2013-04", "2015-11", "2012-10", "2014-09", "2014-02", "2016-02", "2016-04", "2016-06", "2014-12", "2013-07", "2017-01", "2015-10",
@@ -138,7 +140,7 @@ console.log(categories);
 
 
 /****************************
-描画用の svg コンテナの定義
+2. 描画用の svg コンテナの定義
 ****************************/
 
 // 区画整理
@@ -154,12 +156,9 @@ const svg = d3.select(".time-series")
                 .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
 
-
 /****************************
-描画関数の定義
+3. 描画関数の定義
 ****************************/
-
-var z = d3.scaleOrdinal(d3.schemeCategory10);
 
 var xScale = d3.scaleTime()
     .rangeRound([margin.left, width - margin.right])
@@ -176,31 +175,60 @@ var line = d3.line()
 
 
 /****************************
-描画の実行
+4. 描画の実行
 ****************************/
 
 svg.append("g")
     .attr("class", "y-axis")
     .call(d3.axisLeft(yScale))
+    .attr("transform", "translate(" + (margin.left) + ", 0)")
     .append("text")
-    .text("The number of travelar")
     .attr("stroke", "#000")
-    .attr("x", -margin.left)
-    .attr("y", 0);
+    .attr("x", -(height - margin.top - margin.bottom) / 2 - margin.top)
+    .attr("y", -30)
+    .attr("transform", "rotate(-90)")    // 文字を時計回りに90度回転させる
+    .style("text-anchor", "middle")      //　文字の表示開始位置を指定にする
+    .text("Monthly Traveler Count");
 
 svg.append("g")
     .attr("class","x-axis")
     .call(d3.axisBottom(xScale))
     .attr("transform", "translate(0," + (height - margin.bottom) + ")");
 
-svg.enter().insert("g", ".svg")
-    .append("path")
-    .data(data)
-    .attr("class", "line categories")
-    .style("stroke", d => z(d.id))
-    .merge(svg)
-    .attr("d", d => line(d.values))    /// 複数系列の表示どうするの？？
 
+var categoryColor = d3.scaleOrdinal(d3.schemeCategory10);  // （複数 Path の表示） 色の設定、どうやる？
+
+var multiline = svg.selectAll(".multiliens")  // （複数 Path の表示）categories クラスを選択してデータを投入
+    .data(categories);
+
+//multiline.exit().remove();                    // （複数 Path の表示）これは何？ データ投入変数 exit().remove()
+
+multiline.enter().insert("g", ".svg")
+    .append("path")
+    .attr("class", "line multilines")
+    .style("stroke", d => categoryColor(d.id))
+    .merge(multiline)                           // （複数 Path の表示） これは何？ merge(データ投入変数)
+    .attr("d", d => line(d.values))   
+
+ /// 複数系列の表示どうするの？？ PPT にまとめる。
+
+// Add the points
+svg
+    // First we need to enter in a group
+    .selectAll("myDots")
+    .data(categories)
+    .enter()
+    .append('g')
+    .style("fill", d => categoryColor(d.id))
+    // Second we need to enter in the 'values' part of this group
+    .selectAll("myPoints")
+    .data(function(d){ return d.values })
+    .enter()
+    .append("circle")
+    .attr("cx", d => xScale(d.date))
+    .attr("cy", d => yScale(d.values))
+    .attr("r", 5)
+    .attr("stroke", "white");
 
 
 
