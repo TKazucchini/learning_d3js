@@ -196,7 +196,11 @@ svg.append("g")
     .attr("transform", "translate(0," + (height - margin.bottom) + ")");
 
 
-var categoryColor = d3.scaleOrdinal(d3.schemeCategory10);  // （複数 Path の表示） 色の設定、どうやる？
+//var categoryColor = d3.scaleOrdinal(d3.schemeCategory10);  // （複数 Path の表示） 色の設定、どうやる？
+
+var categoryColor = d3.scaleOrdinal()
+      .domain(keys)
+      .range(d3.schemeCategory10);
 
 var multiline = svg.selectAll(".multiliens")  // （複数 Path の表示）categories クラスを選択してデータを投入
     .data(categories);
@@ -222,11 +226,11 @@ svg
     .style("fill", d => categoryColor(d.id))
     // Second we need to enter in the 'values' part of this group
     .selectAll("myPoints")
-    .data(function(d){ return d.values })
+    .data(d => d.values)
     .enter()
     .append("circle")
-    .attr("cx", d => xScale(d.date))
-    .attr("cy", d => yScale(d.values))
+    .attr("cx", line.x())
+    .attr("cy", line.y())
     .attr("r", 5)
     .attr("stroke", "white");
 
