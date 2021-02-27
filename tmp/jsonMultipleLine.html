@@ -3,7 +3,7 @@
 <head>
     <meta charset = "utf-8">
     <meta name = "viewport" content = "width=device-width, initial-scale = 1.0">
-    <title>折れ線グラフ</title>
+    <title>Json処理折れ線グラフ</title>
     <script src = "https://d3js.org/d3.v6.min.js" charset = "utf-8"></script>
     <style>
 
@@ -81,53 +81,38 @@
 /****************************
 1. データの整形
 ****************************/
-d3.json("https://raw.githubusercontent.com/TKazucchini/learning_d3js/master/data/data_en.json").then(d => drawGraph(d));
+d3.json("https://raw.githubusercontent.com/TKazucchini/learning_d3js/master/data/data.json").then(d => drawGraph(d));
 
 function drawGraph(jsonData){
 
-    var port_list = Object.keys(jsonData);
-    //console.log(jsonData.その他);
+    var date_list = Object.keys(jsonData);
+    //console.log(jsonData["2007-01-01"]["all"]);
 
-    for(var i = 0; i < port_list.length; i++){
- 
-        timeseries_data = jsonData[port_list[i]];
-        time_list = Object.keys(timeseries_data);
-        
-        for(var i = 0; i < time_list.length; i++){
+    // 空港ごとにフィルターしてデータ系列を作成する関数を定義して処理させる。（処理速度の心配あり？
 
-            console.log(timeseries_data);
-            //in_jp_data = timeseries_data[time_list[i]].reduce((sum, x) => sum + x.in_jp, 0);
-            //conseole.log(in_jp_data);
-        } 
-
-    
-    }
-    //const in_jp = jsonData.reduce((sum, x) => sum + x.in_jp, 0);
-    //console.log(in_jp);
-
-
-
-
-
-
-
-    // data 配列の作成
     var data = [];
-    for(var i = 0; i < date.length; i++){
-        var obj = {date: date[i],
-                in_jp: in_jp[i],
-                in_fr: in_fr[i],
-                in_tr: in_tr[i],
-                em_jp: em_jp[i],
-                em_fr: em_fr[i],
-                em_tr: em_tr[i],
-                };
+    for(var i = 0; i < date_list.length; i++){
+
+        var obj = {
+            date: date_list[i],
+            in_jp: jsonData[date_list[i]]["all"]["in_jp"],
+            in_fr: jsonData[date_list[i]]["all"]["in_fr"],
+            in_tr: jsonData[date_list[i]]["all"]["in_tr"],
+            em_jp: jsonData[date_list[i]]["all"]["em_jp"],
+            em_fr: jsonData[date_list[i]]["all"]["em_fr"],
+            em_tr: jsonData[date_list[i]]["all"]["em_tr"]
+            };
         data.push(obj);
-    }
+    };
+
+    console.log(data.date);
+
+
+
 
 
     // データ型パース関数定義
-    var parseTime = d3.timeParse("%Y-%m");
+    var parseTime = d3.timeParse("%Y-%m-%d");
     var formatDate = d3.timeFormat("%Y-%m");
 
     // 日付型の定義
