@@ -85,6 +85,8 @@ d3.json("https://raw.githubusercontent.com/TKazucchini/learning_d3js/master/data
 
 function drawGraph(jsonData){
 
+
+/*
     var date_list = Object.keys(jsonData);
 
     function filterPort(arg){
@@ -106,7 +108,27 @@ function drawGraph(jsonData){
     };
 
     data = filterPort("all");
+*/
 
+    function filterPort(arg){
+    // 空港ごとにフィルターしてデータ系列を作成する.
+        var data = [];
+        Object.keys(jsonData).forEach(function(key){
+            var obj = {
+                date: key,
+                in_jp: this[key][arg]["in_jp"],
+                in_fr: this[key][arg]["in_fr"],
+                in_tr: this[key][arg]["in_tr"],
+                em_jp: this[key][arg]["em_jp"],
+                em_fr: this[key][arg]["em_fr"],
+                em_tr: this[key][arg]["em_tr"]
+                };
+            data.push(obj);
+        }, jsonData);
+        return data;
+    };
+
+    data = filterPort("all");
 
     // データ型パース関数定義
     var parseTime = d3.timeParse("%Y-%m");
@@ -233,4 +255,5 @@ function drawGraph(jsonData){
 }
 
 </script>
+</body>
 </html>
